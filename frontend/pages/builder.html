@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom PC Configurator — PC Configurations</title>
+  <meta name="description" content="Cinematic, interactive custom gaming PC builder with real-time hardware compatibility verification, wattage calculation, and instant checkout.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="configurator-page">
+
+  <!-- Product Title Bar (Directly below main header) -->
+  <section class="builder-topbar" id="builder-topbar">
+    <div class="topbar-info">
+      <div class="topbar-title-wrap">
+        <span class="topbar-badge" id="build-status-badge">Configuring Rig</span>
+        <h1 class="topbar-title" id="build-name-display" title="Click to rename" style="cursor:pointer;">
+          CUSTOM GAMING PC <i class="bi bi-pencil-square" style="font-size:0.9rem; opacity:0.6;"></i>
+        </h1>
+      </div>
+      <div class="topbar-meta-pill" id="topbar-slots-counter">
+        <i class="bi bi-cpu-fill"></i> <span id="topbar-selected-count">0 / 5</span> SELECTED
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div class="topbar-price-wrap">
+        <div class="topbar-price-label">Live System Total</div>
+        <div class="topbar-price-val" id="topbar-total-price">₹0</div>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-save-build-top" title="Save this configuration to your account">
+        <i class="bi bi-bookmark-plus"></i> Save Build
+      </button>
+      <button class="btn btn-electric btn-sm" id="btn-add-cart-top" title="Add all selected components to cart">
+        <i class="bi bi-cart-plus-fill"></i> Add to Cart
+      </button>
+    </div>
+  </section>
+
+  <!-- 3-Column Immersive Viewport -->
+  <main class="builder-stage-grid">
+
+    <!-- 1. Left Vertical Component Category Rail -->
+    <aside class="builder-cat-rail" id="builder-cat-rail">
+      <div class="cat-rail-header">
+        <span>Hardware Slots</span>
+        <span id="cat-rail-progress">0/5</span>
+      </div>
+
+      <!-- CPU -->
+      <div class="cat-item-card active" data-category="CPU" id="rail-cat-CPU">
+        <div class="cat-item-icon-box">
+          <i class="bi bi-cpu"></i>
+        </div>
+        <div class="cat-item-content">
+          <div class="cat-item-name">
+            <span>Processor (CPU)</span>
+            <span class="cat-status-dot" id="dot-CPU"></span>
+          </div>
+          <div class="cat-item-sub" id="rail-sub-CPU">Choose processor</div>
+        </div>
+      </div>
+
+      <!-- GPU -->
+      <div class="cat-item-card" data-category="GPU" id="rail-cat-GPU">
+        <div class="cat-item-icon-box">
+          <i class="bi bi-gpu-card"></i>
+        </div>
+        <div class="cat-item-content">
+          <div class="cat-item-name">
+            <span>Graphics (GPU)</span>
+            <span class="cat-status-dot" id="dot-GPU"></span>
+          </div>
+          <div class="cat-item-sub" id="rail-sub-GPU">Choose graphics card</div>
+        </div>
+      </div>
+
+      <!-- RAM -->
+      <div class="cat-item-card" data-category="RAM" id="rail-cat-RAM">
+        <div class="cat-item-icon-box">
+          <i class="bi bi-memory"></i>
+        </div>
+        <div class="cat-item-content">
+          <div class="cat-item-name">
+            <span>Memory (RAM)</span>
+            <span class="cat-status-dot" id="dot-RAM"></span>
+          </div>
+          <div class="cat-item-sub" id="rail-sub-RAM">Choose DDR5 memory</div>
+        </div>
+      </div>
+
+      <!-- STORAGE -->
+      <div class="cat-item-card" data-category="STORAGE" id="rail-cat-STORAGE">
+        <div class="cat-item-icon-box">
+          <i class="bi bi-device-ssd"></i>
+        </div>
+        <div class="cat-item-content">
+          <div class="cat-item-name">
+            <span>Primary Storage</span>
+            <span class="cat-status-dot" id="dot-STORAGE"></span>
+          </div>
+          <div class="cat-item-sub" id="rail-sub-STORAGE">Choose NVMe SSD</div>
+        </div>
+      </div>
+
+      <!-- CABINET -->
+      <div class="cat-item-card" data-category="CABINET" id="rail-cat-CABINET">
+        <div class="cat-item-icon-box">
+          <i class="bi bi-pc"></i>
+        </div>
+        <div class="cat-item-content">
+          <div class="cat-item-name">
+            <span>Chassis / Case</span>
+            <span class="cat-status-dot" id="dot-CABINET"></span>
+          </div>
+          <div class="cat-item-sub" id="rail-sub-CABINET">Choose PC cabinet</div>
+        </div>
+      </div>
+
+      <!-- Action Utilities inside Rail -->
+      <div style="margin-top:auto; padding-top:14px; display:flex; flex-direction:column; gap:8px;">
+        <button class="btn btn-outline btn-sm" id="btn-undo-action" style="font-size:0.8rem; padding:8px 12px; justify-content:flex-start;">
+          <i class="bi bi-arrow-counterclockwise"></i> Undo Last Choice
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btn-reset-action" style="font-size:0.8rem; padding:8px 12px; justify-content:flex-start; color:var(--text-muted);">
+          <i class="bi bi-trash"></i> Reset All Parts
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2. Center Cinematic Showcase & Bottom Carousel -->
+    <section class="builder-showcase-stage">
+
+      <!-- Viewport Stage with Room Background and Glowing Podium -->
+      <div class="showcase-viewport" id="showcase-viewport">
+
+        <!-- Stage Toolbar: Angles & Views -->
+        <div class="stage-toolbar-dock">
+          <button class="stage-tool-btn active" id="tool-view-rig" title="Cinematic Flagship Rig">
+            <i class="bi bi-box"></i> Flagship View
+          </button>
+          <button class="stage-tool-btn" id="tool-view-chassis" title="View Selected Cabinet">
+            <i class="bi bi-display"></i> Chassis View
+          </button>
+        </div>
+
+        <!-- Stage Lighting Aura Picker -->
+        <div class="stage-lighting-picker">
+          <span class="stage-lighting-label">Aura</span>
+          <div class="aura-dot aura-cyan active" data-aura="cyan" title="Electric Cyan"></div>
+          <div class="aura-dot aura-emerald" data-aura="emerald" title="Neon Emerald"></div>
+          <div class="aura-dot aura-purple" data-aura="purple" title="Ultraviolet"></div>
+          <div class="aura-dot aura-orange" data-aura="orange" title="Solar Orange"></div>
+        </div>
+
+        <!-- Dynamic Ambient Podium Glow -->
+        <div class="stage-podium-glow" id="podium-glow"></div>
+        <div class="stage-podium-ring" id="podium-ring"></div>
+
+        <!-- Primary Showcase Rig -->
+        <div class="showcase-rig-holder">
+          <img src="/assets/showcase/rig_primary.jpg" alt="Custom Gaming PC Showcase" class="showcase-rig-img" id="showcase-rig-img">
+        </div>
+
+      </div>
+
+      <!-- Bottom Horizontal Component Selection Carousel -->
+      <div class="builder-carousel-dock">
+        <div class="carousel-bar-header">
+          <div class="carousel-title-group">
+            <h3 class="carousel-category-heading" id="carousel-category-title">SELECT PROCESSOR (CPU)</h3>
+            <span class="carousel-count-badge" id="carousel-count-label">Loading products...</span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="position:relative; width:180px;">
+              <input type="text" id="carousel-filter-input" class="form-control" placeholder="Quick search..." style="padding:6px 12px; font-size:0.8rem; background:rgba(14,24,40,0.6); border-color:var(--border);">
+            </div>
+            <div class="carousel-nav-arrows">
+              <button class="carousel-arrow-btn" id="carousel-prev-btn" title="Previous components">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="carousel-arrow-btn" id="carousel-next-btn" title="Next components">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Track Container -->
+        <div class="carousel-track-container" id="carousel-track-container">
+          <div class="carousel-cards-track" id="carousel-cards-track">
+            <!-- Dynamic cards injected here -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. Right Floating Specifications Panel -->
+    <aside class="builder-specs-dock" id="builder-specs-dock">
+      <div class="specs-panel-heading">
+        <span>System Telemetry</span>
+        <span style="font-size:0.75rem; color:var(--accent); font-weight:600;" id="specs-status-pill">ACTIVE</span>
+      </div>
+
+      <!-- Power & Thermal Telemetry Box -->
+      <div class="specs-telemetry-box">
+        <div class="telemetry-row">
+          <span style="color:var(--text-secondary);"><i class="bi bi-lightning-charge-fill text-accent"></i> Est. Power Draw:</span>
+          <span class="telemetry-val" id="telemetry-wattage">65 W</span>
+        </div>
+        <div class="wattage-meter-track">
+          <div class="wattage-meter-fill" id="telemetry-meter-bar" style="width: 15%;"></div>
+        </div>
+        <div class="telemetry-row" style="margin-bottom:0;">
+          <span style="color:var(--text-muted); font-size:0.75rem;">Recommended Power Supply:</span>
+          <span id="telemetry-rec-psu" style="font-family:'Rajdhani'; font-weight:700; color:#fff; font-size:0.95rem;">550W+</span>
+        </div>
+      </div>
+
+      <!-- Compatibility Matrix Alert -->
+      <div class="specs-compat-banner compat-incomplete" id="specs-compat-banner">
+        <i class="bi bi-info-circle-fill"></i>
+        <div id="specs-compat-msg">Select all 5 components to complete electrical and physical validation.</div>
+      </div>
+
+      <!-- Selected Components Breakdown -->
+      <div style="font-family:'Rajdhani'; font-size:0.85rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-muted); margin-top:2px;">
+        Selected Components
+      </div>
+
+      <div class="specs-slot-list" id="specs-slot-list">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="specs-footer-actions">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <span style="font-size:0.78rem; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.06em;">Config Subtotal</span>
+          <span style="font-family:'Rajdhani'; font-size:1.45rem; font-weight:700; color:var(--accent);" id="specs-total-price">₹0</span>
+        </div>
+
+        <button class="btn btn-electric btn-full" id="btn-add-cart-side">
+          <i class="bi bi-cart-check-fill"></i> Add Entire Build to Cart
+        </button>
+        <button class="btn btn-outline btn-full btn-sm" id="btn-save-build-side">
+          <i class="bi bi-bookmark-plus"></i> Save Custom Build
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btn-copy-specs" style="font-size:0.76rem; color:var(--text-muted); padding:4px 0;">
+          <i class="bi bi-clipboard me-1"></i> Copy Spec Sheet
+        </button>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Save Build Modal -->
+  <div class="modal-overlay" id="save-build-modal">
+    <div class="modal" style="max-width:480px; background:rgba(8,16,28,0.95); border:1px solid var(--border); backdrop-filter:blur(24px);">
+      <div class="modal-header" style="border-bottom-color:var(--border);">
+        <h3 class="modal-title" style="color:#fff; font-family:'Rajdhani'; font-size:1.4rem;">
+          <i class="bi bi-bookmark-star text-accent me-2"></i> Save Custom PC Build
+        </h3>
+        <button class="modal-close" id="save-modal-close" style="color:var(--text-muted);">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label class="form-label" style="font-size:0.85rem; color:var(--text-secondary);">Build Title *</label>
+          <input type="text" id="save-build-name-input" class="form-control" placeholder="e.g. Apex 4K Esports Battlestation" value="CUSTOM GAMING PC">
+        </div>
+        <div class="form-group" style="margin-bottom:20px;">
+          <label class="form-label" style="font-size:0.85rem; color:var(--text-secondary);">Configuration Notes (Optional)</label>
+          <textarea id="save-build-notes-input" class="form-control" rows="3" placeholder="Target 1440p 240Hz, streaming, rendering notes..."></textarea>
+        </div>
+        <button class="btn btn-electric btn-full" id="btn-confirm-save">
+          <i class="bi bi-check-lg"></i> Confirm & Save Build
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Build Added to Cart Modal -->
+  <div class="modal-overlay" id="cart-success-modal">
+    <div class="modal" style="max-width:460px; text-align:center; background:rgba(8,16,28,0.95); border:1px solid var(--border); backdrop-filter:blur(24px); padding:32px 24px;">
+      <div style="width:64px; height:64px; border-radius:50%; background:rgba(0,240,255,0.1); border:2px solid var(--accent); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 16px; box-shadow:0 0 25px rgba(0,240,255,0.4);">
+        <i class="bi bi-check-lg"></i>
+      </div>
+      <h3 style="font-family:'Rajdhani'; font-size:1.6rem; color:#fff; margin-bottom:8px;">Build Added to Cart!</h3>
+      <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:24px;" id="cart-modal-summary">
+        All selected hardware components have been synced to your shopping cart.
+      </p>
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <button class="btn btn-outline btn-sm" id="btn-cart-modal-continue" style="flex:1;">
+          Continue Building
+        </button>
+        <a href="cart.html" class="btn btn-electric btn-sm" style="flex:1;">
+          View Cart & Checkout
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Configurator JavaScript -->
+  <script type="module">
+    import { renderNavbar } from '../js/navbar.js';
+    import { api } from '../js/api.js';
+    import { formatPrice, imgFallback, imgOnError } from '../js/utils.js';
+    import { toast } from '../js/toast.js';
+    import { auth } from '../js/auth.js';
+
+    // 1. Initialize Navigation
+    renderNavbar('builder');
+
+    // 2. Application State
+    const CATEGORIES = ['CPU', 'GPU', 'RAM', 'STORAGE', 'CABINET'];
+    const CATEGORY_NAMES = {
+      CPU: 'Processor (CPU)',
+      GPU: 'Graphics Card (GPU)',
+      RAM: 'Memory (RAM)',
+      STORAGE: 'Primary Storage',
+      CABINET: 'Chassis / Case'
+    };
+
+    let allProducts = [];
+    let activeCategory = 'CPU';
+    let currentViewMode = 'rig'; // 'rig' or 'chassis'
+    let currentAura = 'cyan';
+
+    const buildState = {
+      CPU: null,
+      GPU: null,
+      RAM: null,
+      STORAGE: null,
+      CABINET: null,
+    };
+
+    const undoHistory = [];
+    let customBuildTitle = 'CUSTOM GAMING PC';
+
+    // 3. Wattage & Telemetry Estimation
+    function estimateWattage(item) {
+      if (!item) return 0;
+      const text = `${item.name} ${item.description || ''} ${item.specifications || ''}`.toLowerCase();
+      if (item.category === 'CPU') {
+        if (text.includes('14900') || text.includes('13900') || text.includes('7950x')) return 230;
+        if (text.includes('14700') || text.includes('13700') || text.includes('7800x3d') || text.includes('7900x')) return 160;
+        if (text.includes('7600x') || text.includes('14600') || text.includes('13600')) return 120;
+        return 75;
+      }
+      if (item.category === 'GPU') {
+        if (text.includes('4090')) return 450;
+        if (text.includes('4080')) return 320;
+        if (text.includes('7900')) return 300;
+        if (text.includes('4070')) return 200;
+        if (text.includes('4060') || text.includes('3060') || text.includes('7600')) return 140;
+        return 220;
+      }
+      if (item.category === 'RAM') return 15;
+      if (item.category === 'STORAGE') return 10;
+      if (item.category === 'CABINET') return 15;
+      return 10;
+    }
+
+    // 4. Data Loading & Persistence
+    async function initConfigurator() {
+      try {
+        const data = await api.getProducts({ size: 100 });
+        allProducts = Array.isArray(data) ? data : (data.content || []);
+
+        // Restore saved build from localStorage if present
+        restoreLocalState();
+
+        // Check URL parameters e.g. ?slot=GPU&id=5
+        const params = new URLSearchParams(window.location.search);
+        const slot = params.get('slot')?.toUpperCase();
+        const id = params.get('id');
+        if (slot && id && buildState.hasOwnProperty(slot)) {
+          const item = allProducts.find(p => p.id == id);
+          if (item) selectComponent(slot, item, false);
+        }
+
+        renderCategoryRail();
+        renderActiveCarousel();
+        updateUI();
+      } catch (err) {
+        console.error('Failed to load products for configurator:', err);
+        toast.error('Could not connect to backend product catalog.');
+      }
+    }
+
+    function saveLocalState() {
+      try {
+        const payload = {
+          title: customBuildTitle,
+          slots: {
+            CPU: buildState.CPU?.id || null,
+            GPU: buildState.GPU?.id || null,
+            RAM: buildState.RAM?.id || null,
+            STORAGE: buildState.STORAGE?.id || null,
+            CABINET: buildState.CABINET?.id || null,
+          }
+        };
+        localStorage.setItem('pc_current_config', JSON.stringify(payload));
+      } catch {}
+    }
+
+    function restoreLocalState() {
+      try {
+        const raw = localStorage.getItem('pc_current_config');
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed.title) customBuildTitle = parsed.title;
+        if (parsed.slots) {
+          for (const cat of CATEGORIES) {
+            const id = parsed.slots[cat];
+            if (id) {
+              const found = allProducts.find(p => p.id === id);
+              if (found) buildState[cat] = found;
+            }
+          }
+        }
+      } catch {}
+    }
+
+    // 5. Select, Replace & Remove Operations
+    function selectComponent(category, product, pushUndo = true) {
+      if (pushUndo) {
+        undoHistory.push({
+          category,
+          prev: buildState[category]
+        });
+      }
+      buildState[category] = product;
+      saveLocalState();
+      updateUI();
+      renderActiveCarousel();
+      renderCategoryRail();
+
+      // If cabinet was selected, update chassis view
+      if (category === 'CABINET') {
+        updateShowcaseImage();
+      }
+    }
+
+    function removeComponent(category) {
+      if (!buildState[category]) return;
+      undoHistory.push({
+        category,
+        prev: buildState[category]
+      });
+      buildState[category] = null;
+      saveLocalState();
+      updateUI();
+      renderActiveCarousel();
+      renderCategoryRail();
+      updateShowcaseImage();
+    }
+
+    function undoLastAction() {
+      if (undoHistory.length === 0) {
+        toast.info('Nothing to undo');
+        return;
+      }
+      const last = undoHistory.pop();
+      buildState[last.category] = last.prev;
+      saveLocalState();
+      updateUI();
+      renderActiveCarousel();
+      renderCategoryRail();
+      updateShowcaseImage();
+      toast.info(`Reverted ${last.category}`);
+    }
+
+    function resetEntireBuild() {
+      if (!confirm('Are you sure you want to clear your entire configuration?')) return;
+      CATEGORIES.forEach(c => buildState[c] = null);
+      undoHistory.length = 0;
+      saveLocalState();
+      updateUI();
+      renderActiveCarousel();
+      renderCategoryRail();
+      updateShowcaseImage();
+      toast.info('Configuration cleared');
+    }
+
+    // 6. Showcase Stage Visuals & Aura
+    function updateShowcaseImage() {
+      const rigImg = document.getElementById('showcase-rig-img');
+      if (currentViewMode === 'chassis' && buildState.CABINET) {
+        rigImg.src = imgFallback(buildState.CABINET.imageUrl, 'CABINET');
+      } else {
+        rigImg.src = '/assets/showcase/rig_primary.jpg';
+      }
+    }
+
+    function setAuraColor(color) {
+      currentAura = color;
+      const glow = document.getElementById('podium-glow');
+      const ring = document.getElementById('podium-ring');
+      
+      const colors = {
+        cyan: { hex: '#00f0ff', rgb: '0, 240, 255' },
+        emerald: { hex: '#10b981', rgb: '16, 185, 129' },
+        purple: { hex: '#a855f7', rgb: '168, 85, 247' },
+        orange: { hex: '#ff5722', rgb: '255, 87, 34' }
+      };
+
+      const c = colors[color] || colors.cyan;
+      glow.style.background = `radial-gradient(ellipse, rgba(${c.rgb}, 0.35) 0%, rgba(${c.rgb}, 0.08) 50%, transparent 75%)`;
+      ring.style.borderColor = `rgba(${c.rgb}, 0.45)`;
+      ring.style.boxShadow = `0 0 30px rgba(${c.rgb}, 0.5), inset 0 0 30px rgba(${c.rgb}, 0.3)`;
+
+      document.querySelectorAll('.aura-dot').forEach(d => {
+        d.classList.toggle('active', d.dataset.aura === color);
+      });
+    }
+
+    // 7. Render Left Category Rail
+    function renderCategoryRail() {
+      let filled = 0;
+      CATEGORIES.forEach(cat => {
+        const item = buildState[cat];
+        const card = document.getElementById(`rail-cat-${cat}`);
+        const sub = document.getElementById(`rail-sub-${cat}`);
+        const dot = document.getElementById(`dot-${cat}`);
+
+        card.classList.toggle('active', activeCategory === cat);
+        card.classList.toggle('selected', !!item);
+
+        if (item) {
+          filled++;
+          sub.textContent = `${item.brand} ${item.name}`;
+          sub.style.color = '#fff';
+        } else {
+          sub.textContent = `Choose ${CATEGORY_NAMES[cat]}`;
+          sub.style.color = 'var(--text-muted)';
+        }
+      });
+
+      document.getElementById('cat-rail-progress').textContent = `${filled}/5`;
+      document.getElementById('topbar-selected-count').textContent = `${filled} / 5`;
+    }
+
+    // 8. Render Bottom Product Carousel
+    function renderActiveCarousel() {
+      const heading = document.getElementById('carousel-category-title');
+      const countLabel = document.getElementById('carousel-count-label');
+      const track = document.getElementById('carousel-cards-track');
+      const filterTerm = (document.getElementById('carousel-filter-input').value || '').toLowerCase().trim();
+
+      heading.textContent = `CHOOSE ${CATEGORY_NAMES[activeCategory]?.toUpperCase() || activeCategory}`;
+
+      const catProducts = allProducts.filter(p => {
+        if (p.category !== activeCategory) return false;
+        if (!filterTerm) return true;
+        const str = `${p.name} ${p.brand} ${p.specifications || ''}`.toLowerCase();
+        return str.includes(filterTerm);
+      });
+
+      countLabel.textContent = `${catProducts.length} models available`;
+
+      if (catProducts.length === 0) {
+        track.innerHTML = `
+          <div style="padding:24px; color:var(--text-muted); font-size:0.9rem;">
+            No components found in category ${activeCategory} matching "${filterTerm}".
+          </div>
+        `;
+        return;
+      }
+
+      const currentSelected = buildState[activeCategory];
+
+      track.innerHTML = catProducts.map(p => {
+        const isSelected = currentSelected && currentSelected.id === p.id;
+        
+        // Price difference relative to current choice in this slot
+        let diffHtml = '';
+        if (currentSelected) {
+          const diff = Number(p.price) - Number(currentSelected.price);
+          if (diff === 0) {
+            diffHtml = `<span class="p-card-diff diff-included">Selected Choice</span>`;
+          } else if (diff > 0) {
+            diffHtml = `<span class="p-card-diff diff-plus">+${formatPrice(diff)}</span>`;
+          } else {
+            diffHtml = `<span class="p-card-diff diff-included">-${formatPrice(Math.abs(diff))}</span>`;
+          }
+        } else {
+          diffHtml = `<span class="p-card-diff">Standard Base</span>`;
+        }
+
+        // Recommendation Pill heuristic
+        let recomBadge = '';
+        const lowerName = p.name.toLowerCase();
+        if (lowerName.includes('4090') || lowerName.includes('i9-14900') || lowerName.includes('7950x')) {
+          recomBadge = `<span class="p-card-recom-pill">FLAGSHIP</span>`;
+        } else if (lowerName.includes('4070') || lowerName.includes('i7') || lowerName.includes('7800x3d')) {
+          recomBadge = `<span class="p-card-recom-pill" style="border-color:rgba(0,240,255,0.4); color:var(--accent);">BEST VALUE</span>`;
+        }
+
+        return `
+          <div class="p-card-carousel ${isSelected ? 'is-selected' : ''}" data-id="${p.id}">
+            <div class="p-card-badge-row">
+              <span class="p-card-brand-pill">${p.brand || 'CORE'}</span>
+              ${recomBadge}
+            </div>
+
+            <div class="p-card-img-wrap">
+              <img src="${imgFallback(p.imageUrl, p.category)}" alt="${p.name}" class="p-card-img" loading="lazy" onerror="${imgOnError(p.category)}">
+            </div>
+
+            <div class="p-card-name" title="${p.name}">${p.name}</div>
+            <div class="p-card-specs">${p.specifications || (p.description ? p.description.slice(0, 40) + '...' : 'Verified')}</div>
+
+            <div class="p-card-footer">
+              <div class="p-card-price-block">
+                <span class="p-card-price">${formatPrice(p.price)}</span>
+                ${diffHtml}
+              </div>
+
+              <button class="p-card-select-btn" data-action="select" data-id="${p.id}">
+                ${isSelected ? '<i class="bi bi-check-lg"></i> Selected' : 'Select'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Wire card click listeners
+      track.querySelectorAll('.p-card-carousel').forEach(card => {
+        const id = Number(card.dataset.id);
+        const prod = allProducts.find(item => item.id === id);
+        card.onclick = (e) => {
+          if (prod) {
+            selectComponent(activeCategory, prod);
+          }
+        };
+      });
+    }
+
+    // 9. Recalculate Totals, Telemetry & Compatibility
+    function updateUI() {
+      let totalCost = 0;
+      let totalWatts = 50; // Motherboard + Fans base
+      let filledSlots = 0;
+
+      CATEGORIES.forEach(cat => {
+        const item = buildState[cat];
+        if (item) {
+          filledSlots++;
+          totalCost += Number(item.price);
+          totalWatts += estimateWattage(item);
+        }
+      });
+
+      // Price Displays
+      const formattedTotal = formatPrice(totalCost);
+      document.getElementById('topbar-total-price').textContent = formattedTotal;
+      document.getElementById('specs-total-price').textContent = formattedTotal;
+      document.getElementById('build-name-display').innerHTML = `
+        ${customBuildTitle} <i class="bi bi-pencil-square" style="font-size:0.85rem; opacity:0.6;"></i>
+      `;
+
+      // Wattage Telemetry
+      const recPsu = Math.ceil((totalWatts * 1.35) / 50) * 50;
+      const finalPsu = Math.max(550, recPsu);
+      document.getElementById('telemetry-wattage').textContent = `${totalWatts} W`;
+      document.getElementById('telemetry-rec-psu').textContent = `${finalPsu}W+`;
+      const meterPct = Math.min(100, Math.round((totalWatts / 850) * 100));
+      document.getElementById('telemetry-meter-bar').style.width = `${meterPct}%`;
+
+      // Compatibility Banner
+      const banner = document.getElementById('specs-compat-banner');
+      const msg = document.getElementById('specs-compat-msg');
+      const statusPill = document.getElementById('specs-status-pill');
+
+      if (filledSlots === 5) {
+        banner.className = 'specs-compat-banner compat-complete';
+        banner.innerHTML = `<i class="bi bi-patch-check-fill"></i> <div><strong>100% Compatible:</strong> PCIe 5.0 lanes, DDR5 memory, TDP thermal dissipation & chassis clearance verified!</div>`;
+        statusPill.textContent = 'VERIFIED';
+        statusPill.style.color = 'var(--green)';
+      } else {
+        const remaining = 5 - filledSlots;
+        banner.className = 'specs-compat-banner compat-incomplete';
+        banner.innerHTML = `<i class="bi bi-info-circle-fill"></i> <div>Select <strong>${remaining} more slot${remaining > 1 ? 's' : ''}</strong> (${CATEGORIES.filter(c => !buildState[c]).join(', ')}) for full build validation.</div>`;
+        statusPill.textContent = `${filledSlots}/5 SLOTS`;
+        statusPill.style.color = 'var(--accent)';
+      }
+
+      // Render Selected Slots in Right Panel
+      const slotList = document.getElementById('specs-slot-list');
+      slotList.innerHTML = CATEGORIES.map(cat => {
+        const item = buildState[cat];
+        if (!item) {
+          return `
+            <div class="spec-slot-entry" style="opacity:0.65; cursor:pointer;" data-cat="${cat}">
+              <div class="spec-slot-info">
+                <div class="spec-slot-cat">${cat}</div>
+                <div class="spec-slot-empty">+ Choose ${cat}</div>
+              </div>
+              <i class="bi bi-plus-circle" style="color:var(--accent);"></i>
+            </div>
+          `;
+        }
+        return `
+          <div class="spec-slot-entry">
+            <img src="${imgFallback(item.imageUrl, cat)}" class="spec-slot-thumb" alt="${item.name}" onerror="${imgOnError(cat)}">
+            <div class="spec-slot-info">
+              <div class="spec-slot-cat">${cat} • ${item.brand || ''}</div>
+              <div class="spec-slot-name" title="${item.name}">${item.name}</div>
+            </div>
+            <div class="spec-slot-price">${formatPrice(item.price)}</div>
+            <button class="spec-slot-remove" data-cat="${cat}" title="Remove ${cat}">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      // Wire Slot Clicks in Right Panel
+      slotList.querySelectorAll('.spec-slot-entry').forEach(entry => {
+        const cat = entry.dataset.cat;
+        if (cat) {
+          entry.onclick = () => {
+            activeCategory = cat;
+            renderCategoryRail();
+            renderActiveCarousel();
+          };
+        }
+      });
+
+      slotList.querySelectorAll('.spec-slot-remove').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          removeComponent(btn.dataset.cat);
+        };
+      });
+
+      // Enable/Disable Actions
+      const hasAny = filledSlots > 0;
+      document.getElementById('btn-add-cart-top').disabled = !hasAny;
+      document.getElementById('btn-save-build-top').disabled = !hasAny;
+      document.getElementById('btn-add-cart-side').disabled = !hasAny;
+      document.getElementById('btn-save-build-side').disabled = !hasAny;
+    }
+
+    // 10. Add Entire Build to Cart
+    async function addBuildToCart() {
+      const selected = CATEGORIES.map(c => buildState[c]).filter(Boolean);
+      if (selected.length === 0) {
+        toast.warning('Please select at least one component to add to cart.');
+        return;
+      }
+
+      if (!auth.isLoggedIn()) {
+        toast.info('Please sign in to save items to your personal cart.');
+        setTimeout(() => {
+          window.location.href = `login.html?redirect=builder`;
+        }, 1200);
+        return;
+      }
+
+      const btnTop = document.getElementById('btn-add-cart-top');
+      const btnSide = document.getElementById('btn-add-cart-side');
+      btnTop.disabled = true;
+      btnSide.disabled = true;
+      btnSide.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Syncing Cart...`;
+
+      try {
+        let addedCount = 0;
+        for (const item of selected) {
+          await api.addToCart(item.id, 1);
+          addedCount++;
+        }
+        window.dispatchEvent(new Event('cart-update'));
+        
+        document.getElementById('cart-modal-summary').innerHTML = `
+          Added <strong>${addedCount} hardware components</strong> for <strong>${customBuildTitle}</strong> directly to your shopping cart.
+        `;
+        document.getElementById('cart-success-modal').classList.add('open');
+      } catch (err) {
+        toast.error(err.message || 'Failed to add items to cart.');
+      } finally {
+        btnTop.disabled = false;
+        btnSide.disabled = false;
+        btnSide.innerHTML = `<i class="bi bi-cart-check-fill"></i> Add Entire Build to Cart`;
+      }
+    }
+
+    // 11. Save Build Logic
+    function openSaveModal() {
+      const selected = CATEGORIES.map(c => buildState[c]).filter(Boolean);
+      if (selected.length === 0) {
+        toast.warning('Select components before saving this build.');
+        return;
+      }
+      if (!auth.isLoggedIn()) {
+        toast.info('Please sign in to save your PC build.');
+        setTimeout(() => {
+          window.location.href = `login.html?redirect=builder`;
+        }, 1200);
+        return;
+      }
+      document.getElementById('save-build-name-input').value = customBuildTitle;
+      document.getElementById('save-build-modal').classList.add('open');
+    }
+
+    async function confirmSaveBuild() {
+      const title = document.getElementById('save-build-name-input').value.trim();
+      const notes = document.getElementById('save-build-notes-input').value.trim();
+      if (!title) {
+        toast.warning('Please enter a build title.');
+        return;
+      }
+
+      const componentIds = CATEGORIES.map(c => buildState[c]?.id).filter(Boolean);
+      const btn = document.getElementById('btn-confirm-save');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Saving...`;
+
+      try {
+        await api.createBuild({
+          buildName: title,
+          notes: notes || undefined,
+          componentIds: componentIds
+        });
+        customBuildTitle = title;
+        saveLocalState();
+        updateUI();
+        document.getElementById('save-build-modal').classList.remove('open');
+        toast.success(`"${title}" saved successfully to My Builds!`);
+      } catch (err) {
+        toast.error(err.message || 'Failed to save build.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-check-lg"></i> Confirm & Save Build`;
+      }
+    }
+
+    // 12. Copy Spec Sheet
+    function copySpecSheet() {
+      const lines = [
+        `========================================`,
+        `PC CONFIGURATIONS — ${customBuildTitle}`,
+        `========================================`,
+      ];
+      CATEGORIES.forEach(cat => {
+        const item = buildState[cat];
+        lines.push(`${cat.padEnd(8)}: ${item ? `${item.brand} ${item.name} (${formatPrice(item.price)})` : 'None'}`);
+      });
+      let totalCost = CATEGORIES.reduce((sum, c) => sum + (Number(buildState[c]?.price) || 0), 0);
+      lines.push(`----------------------------------------`);
+      lines.push(`Total Cost: ${formatPrice(totalCost)}`);
+      lines.push(`Generated on: ${new Date().toLocaleDateString()}`);
+
+      navigator.clipboard.writeText(lines.join('\n')).then(() => {
+        toast.success('Spec sheet copied to clipboard!');
+      }).catch(() => {
+        toast.info('Could not access clipboard.');
+      });
+    }
+
+    // 13. Event Listeners Setup
+    // Category rail item clicks
+    CATEGORIES.forEach(cat => {
+      document.getElementById(`rail-cat-${cat}`).onclick = () => {
+        activeCategory = cat;
+        renderCategoryRail();
+        renderActiveCarousel();
+      };
+    });
+
+    // Carousel arrows
+    const trackContainer = document.getElementById('carousel-track-container');
+    document.getElementById('carousel-prev-btn').onclick = () => {
+      trackContainer.scrollBy({ left: -280, behavior: 'smooth' });
+    };
+    document.getElementById('carousel-next-btn').onclick = () => {
+      trackContainer.scrollBy({ left: 280, behavior: 'smooth' });
+    };
+
+    // Filter input
+    document.getElementById('carousel-filter-input').addEventListener('input', () => {
+      renderActiveCarousel();
+    });
+
+    // View toggles
+    document.getElementById('tool-view-rig').onclick = () => {
+      currentViewMode = 'rig';
+      document.getElementById('tool-view-rig').classList.add('active');
+      document.getElementById('tool-view-chassis').classList.remove('active');
+      updateShowcaseImage();
+    };
+    document.getElementById('tool-view-chassis').onclick = () => {
+      currentViewMode = 'chassis';
+      document.getElementById('tool-view-chassis').classList.add('active');
+      document.getElementById('tool-view-rig').classList.remove('active');
+      updateShowcaseImage();
+    };
+
+    // Aura selectors
+    document.querySelectorAll('.aura-dot').forEach(dot => {
+      dot.onclick = () => setAuraColor(dot.dataset.aura);
+    });
+
+    // Rename title prompt
+    document.getElementById('build-name-display').onclick = () => {
+      const next = prompt('Enter a custom name for this PC configuration:', customBuildTitle);
+      if (next && next.trim()) {
+        customBuildTitle = next.trim();
+        saveLocalState();
+        updateUI();
+      }
+    };
+
+    // Undo / Reset
+    document.getElementById('btn-undo-action').onclick = undoLastAction;
+    document.getElementById('btn-reset-action').onclick = resetEntireBuild;
+
+    // Cart and Save triggers
+    document.getElementById('btn-add-cart-top').onclick = addBuildToCart;
+    document.getElementById('btn-add-cart-side').onclick = addBuildToCart;
+    document.getElementById('btn-save-build-top').onclick = openSaveModal;
+    document.getElementById('btn-save-build-side').onclick = openSaveModal;
+    document.getElementById('btn-confirm-save').onclick = confirmSaveBuild;
+    document.getElementById('save-modal-close').onclick = () => {
+      document.getElementById('save-build-modal').classList.remove('open');
+    };
+    document.getElementById('btn-cart-modal-continue').onclick = () => {
+      document.getElementById('cart-success-modal').classList.remove('open');
+    };
+    document.getElementById('btn-copy-specs').onclick = copySpecSheet;
+
+    // Close modals on overlay click
+    window.onclick = (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('open');
+      }
+    };
+
+    // Start App
+    initConfigurator();
+  </script>
+</body>
+</html>

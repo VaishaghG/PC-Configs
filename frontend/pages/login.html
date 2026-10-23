@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — PC Configurations</title>
+  <meta name="description" content="Log in to your PC Configurations account to access saved builds, order history, and active carts.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="../index.html">
+        <h1>PC <span>CONFIGS</span></h1>
+      </a>
+      <p style="font-size:0.85rem; margin-top:6px; color:var(--text-muted);">Welcome back, builder. Sign in to your account.</p>
+    </div>
+
+    <!-- Quick Demo Pill -->
+    <div style="background:var(--accent-dark); border:1px solid rgba(163,230,53,0.25); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-size:0.75rem; font-weight:700; color:var(--accent);"><i class="bi bi-lightning-charge-fill"></i> DEMO CREDENTIALS</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">admin@pcconfigurations.com / admin123</div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="btn-fill-demo" style="padding:4px 10px; font-size:0.75rem;">
+        Auto-Fill
+      </button>
+    </div>
+
+    <form class="auth-form" id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email Address</label>
+        <input type="email" id="login-email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <label class="form-label" for="login-password">Password</label>
+        </div>
+        <div class="input-group">
+          <input type="password" id="login-password" class="form-control" placeholder="Enter password" required autocomplete="current-password">
+          <button type="button" class="input-group-icon" id="toggle-password" aria-label="Toggle password visibility">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full" id="btn-submit-login">
+        Sign In
+      </button>
+    </form>
+
+    <div class="auth-divider" style="margin:24px 0;"><span>OR</span></div>
+
+    <div style="text-align:center; font-size:0.85rem; color:var(--text-secondary);">
+      Don't have an account yet? 
+      <a href="./register.html" style="font-weight:600; color:var(--accent);">Create one now</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { api } from '../js/api.js';
+    import { auth } from '../js/auth.js';
+    import { toast } from '../js/toast.js';
+
+    // Password visibility toggle
+    const toggleBtn = document.getElementById('toggle-password');
+    const pwdInput = document.getElementById('login-password');
+    toggleBtn.addEventListener('click', () => {
+      const isPwd = pwdInput.type === 'password';
+      pwdInput.type = isPwd ? 'text' : 'password';
+      toggleBtn.innerHTML = isPwd ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+    });
+
+    // Quick fill demo
+    document.getElementById('btn-fill-demo').addEventListener('click', () => {
+      document.getElementById('login-email').value = 'admin@pcconfigurations.com';
+      document.getElementById('login-password').value = 'admin123';
+      toast.info('Loaded demo credentials!');
+    });
+
+    // Form submit
+    const form = document.getElementById('login-form');
+    const submitBtn = document.getElementById('btn-submit-login');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      if (!email || !password) return;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner"></span> Authenticating...`;
+
+      try {
+        const res = await api.login({ email, password });
+        auth.setUser(res.token, {
+          id: res.userId,
+          email: res.email,
+          fullName: res.fullName,
+          role: res.role
+        });
+
+        toast.success(`Welcome back, ${res.fullName || 'Builder'}!`);
+        
+        // Redirect
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        setTimeout(() => {
+          if (redirect === 'checkout') {
+            window.location.href = './checkout.html';
+          } else if (redirect === 'builder') {
+            window.location.href = './builder.html';
+          } else if (redirect === 'products') {
+            window.location.href = './products.html';
+          } else if (redirect) {
+            window.location.href = redirect.endsWith('.html') ? redirect : `./${redirect}.html`;
+          } else {
+            window.location.href = './dashboard.html';
+          }
+        }, 600);
+
+      } catch (err) {
+        toast.error(err.message || 'Invalid email or password.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `Sign In`;
+      }
+    });
+  </script>
+</body>
+</html>

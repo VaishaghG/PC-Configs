@@ -1,0 +1,222 @@
+[
+  {
+    "id": 1,
+    "name": "Intel Core i9-13900K",
+    "category": "CPU",
+    "brand": "Intel",
+    "localAssetPath": "/assets/products/prod_1_intel_i9_13900k.jpg",
+    "relativeAssetPath": "../assets/products/prod_1_intel_i9_13900k.jpg",
+    "source": "Custom Studio Hardware Asset",
+    "verified": true,
+    "note": "Already verified locally (561 KB)"
+  },
+  {
+    "id": 2,
+    "name": "AMD Ryzen 9 7950X",
+    "category": "CPU",
+    "brand": "AMD",
+    "localAssetPath": "/assets/products/prod_2_amd_ryzen9_7950x.jpg",
+    "relativeAssetPath": "../assets/products/prod_2_amd_ryzen9_7950x.jpg",
+    "source": "Custom Studio Hardware Asset",
+    "verified": true,
+    "note": "Already verified locally (651 KB)"
+  },
+  {
+    "id": 3,
+    "name": "Intel Core i7-13700K",
+    "category": "CPU",
+    "brand": "Intel",
+    "localAssetPath": "/assets/products/prod_3_intel_i7_13700k.jpg",
+    "relativeAssetPath": "../assets/products/prod_3_intel_i7_13700k.jpg",
+    "source": "High-Res Microprocessor Surface Asset",
+    "verified": true,
+    "note": "Downloaded (108 KB)"
+  },
+  {
+    "id": 4,
+    "name": "AMD Ryzen 5 7600X",
+    "category": "CPU",
+    "brand": "AMD",
+    "localAssetPath": "/assets/products/prod_4_amd_ryzen5_7600x.jpg",
+    "relativeAssetPath": "../assets/products/prod_4_amd_ryzen5_7600x.jpg",
+    "source": "High-Res Multi-Core Processor Asset",
+    "verified": true,
+    "note": "Downloaded (90 KB)"
+  },
+  {
+    "id": 5,
+    "name": "NVIDIA RTX 4090",
+    "category": "GPU",
+    "brand": "NVIDIA",
+    "localAssetPath": "/assets/products/prod_5_nvidia_rtx_4090.jpg",
+    "relativeAssetPath": "../assets/products/prod_5_nvidia_rtx_4090.jpg",
+    "source": "Custom Studio Hardware Asset",
+    "verified": true,
+    "note": "Already verified locally (664 KB)"
+  },
+  {
+    "id": 6,
+    "name": "NVIDIA RTX 4080 Super",
+    "category": "GPU",
+    "brand": "NVIDIA",
+    "localAssetPath": "/assets/products/prod_6_nvidia_rtx_4080super.jpg",
+    "relativeAssetPath": "../assets/products/prod_6_nvidia_rtx_4080super.jpg",
+    "source": "High-Res Triple-Fan GPU Asset",
+    "verified": true,
+    "note": "Downloaded (76 KB)"
+  },
+  {
+    "id": 7,
+    "name": "AMD Radeon RX 7900 XTX",
+    "category": "GPU",
+    "brand": "AMD",
+    "localAssetPath": "/assets/products/prod_7_amd_rx7900xtx.jpg",
+    "relativeAssetPath": "../assets/products/prod_7_amd_rx7900xtx.jpg",
+    "source": "High-Res Flagship Radeon Graphics Asset",
+    "verified": true,
+    "note": "Downloaded (58 KB)"
+  },
+  {
+    "id": 8,
+    "name": "NVIDIA RTX 4070 Ti",
+    "category": "GPU",
+    "brand": "NVIDIA",
+    "localAssetPath": "/assets/products/prod_8_nvidia_rtx_4070ti.jpg",
+    "relativeAssetPath": "../assets/products/prod_8_nvidia_rtx_4070ti.jpg",
+    "source": "High-Res Dual-Slot Ray Tracing GPU Asset",
+    "verified": true,
+    "note": "Downloaded (76 KB)"
+  },
+  {
+    "id": 9,
+    "name": "Corsair Dominator Platinum 32GB DDR5",
+    "category": "RAM",
+    "brand": "Corsair",
+    "localAssetPath": "/assets/products/prod_9_corsair_dominator_32gb.jpg",
+    "relativeAssetPath": "../assets/products/prod_9_corsair_dominator_32gb.jpg",
+    "source": "Custom Studio Hardware Asset",
+    "verified": true,
+    "note": "Already verified locally (651 KB)"
+  },
+  {
+    "id": 10,
+    "name": "G.Skill Trident Z5 32GB DDR5",
+    "category": "RAM",
+    "brand": "G.Skill",
+    "localAssetPath": "/assets/products/prod_10_gskill_trident_32gb.jpg",
+    "relativeAssetPath": "../assets/products/prod_10_gskill_trident_32gb.jpg",
+    "source": "High-Res DDR5 RGB Heatspreader Module",
+    "verified": false,
+    "note": "Download failed: HTTP 404"
+  },
+  {
+    "id": 11,
+    "name": "Kingston Fury Beast 16GB DDR4",
+    "category": "RAM",
+    "brand": "Kingston",
+    "localAssetPath": "/assets/products/prod_11_kingston_fury_16gb.jpg",
+    "relativeAssetPath": "../assets/products/prod_11_kingston_fury_16gb.jpg",
+    "source": "High-Res Black Low-Profile RAM Asset",
+    "verified": true,
+    "note": "Downloaded (64 KB)"
+  },
+  {
+    "id": 12,
+    "name": "TeamGroup T-Force 64GB DDR5",
+    "category": "RAM",
+    "brand": "TeamGroup",
+    "localAssetPath": "/assets/products/prod_12_teamgroup_tforce_64gb.jpg",
+    "relativeAssetPath": "../assets/products/prod_12_teamgroup_tforce_64gb.jpg",
+    "source": "High-Res High-Density Memory Module",
+    "verified": false,
+    "note": "Download failed: HTTP 404"
+  },
+  {
+    "id": 13,
+    "name": "Samsung 990 Pro 2TB NVMe",
+    "category": "STORAGE",
+    "brand": "Samsung",
+    "localAssetPath": "/assets/products/prod_13_samsung_990pro_2tb.jpg",
+    "relativeAssetPath": "../assets/products/prod_13_samsung_990pro_2tb.jpg",
+    "source": "High-Res M.2 NVMe Solid State Drive",
+    "verified": true,
+    "note": "Downloaded (212 KB)"
+  },
+  {
+    "id": 14,
+    "name": "WD Black SN850X 1TB NVMe",
+    "category": "STORAGE",
+    "brand": "Western Digital",
+    "localAssetPath": "/assets/products/prod_14_wd_black_sn850x.jpg",
+    "relativeAssetPath": "../assets/products/prod_14_wd_black_sn850x.jpg",
+    "source": "High-Res PCIe Gen4 Gaming NVMe Drive",
+    "verified": true,
+    "note": "Downloaded (67 KB)"
+  },
+  {
+    "id": 15,
+    "name": "Seagate Barracuda 4TB HDD",
+    "category": "STORAGE",
+    "brand": "Seagate",
+    "localAssetPath": "/assets/products/prod_15_seagate_barracuda_4tb.jpg",
+    "relativeAssetPath": "../assets/products/prod_15_seagate_barracuda_4tb.jpg",
+    "source": "High-Res 3.5-inch Internal SATA Hard Drive",
+    "verified": true,
+    "note": "Downloaded (69 KB)"
+  },
+  {
+    "id": 16,
+    "name": "Crucial P5 Plus 500GB NVMe",
+    "category": "STORAGE",
+    "brand": "Crucial",
+    "localAssetPath": "/assets/products/prod_16_crucial_p5plus_500gb.jpg",
+    "relativeAssetPath": "../assets/products/prod_16_crucial_p5plus_500gb.jpg",
+    "source": "High-Res M.2 Form Factor NVMe SSD",
+    "verified": true,
+    "note": "Downloaded (212 KB)"
+  },
+  {
+    "id": 17,
+    "name": "Lian Li PC-O11 Dynamic EVO",
+    "category": "CABINET",
+    "brand": "Lian Li",
+    "localAssetPath": "/assets/products/prod_17_lianli_o11d_evo.jpg",
+    "relativeAssetPath": "../assets/products/prod_17_lianli_o11d_evo.jpg",
+    "source": "High-Res Dual-Chamber Tempered Glass Case",
+    "verified": false,
+    "note": "Download failed: HTTP 404"
+  },
+  {
+    "id": 18,
+    "name": "Fractal Design Torrent",
+    "category": "CABINET",
+    "brand": "Fractal Design",
+    "localAssetPath": "/assets/products/prod_18_fractal_torrent.jpg",
+    "relativeAssetPath": "../assets/products/prod_18_fractal_torrent.jpg",
+    "source": "High-Res Open Airflow Mesh Case",
+    "verified": true,
+    "note": "Downloaded (119 KB)"
+  },
+  {
+    "id": 19,
+    "name": "NZXT H7 Flow",
+    "category": "CABINET",
+    "brand": "NZXT",
+    "localAssetPath": "/assets/products/prod_19_nzxt_h7_flow.jpg",
+    "relativeAssetPath": "../assets/products/prod_19_nzxt_h7_flow.jpg",
+    "source": "High-Res Clean Minimalist Mid-Tower Chassis",
+    "verified": false,
+    "note": "Download failed: HTTP 404"
+  },
+  {
+    "id": 20,
+    "name": "Corsair 5000D Airflow",
+    "category": "CABINET",
+    "brand": "Corsair",
+    "localAssetPath": "/assets/products/prod_20_corsair_5000d.jpg",
+    "relativeAssetPath": "../assets/products/prod_20_corsair_5000d.jpg",
+    "source": "High-Res High-Airflow Steel Case",
+    "verified": true,
+    "note": "Downloaded (166 KB)"
+  }
+]

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Configurations — Custom PC Builder & High-Performance Hardware</title>
+  <meta name="description"
+    content="Build your dream custom gaming PC with real-time compatibility checks, wattage calculator, and premium components at the best prices.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container hero-content"
+      style="display:flex; align-items:center; justify-content:space-between; gap:40px; padding-top:40px; padding-bottom:40px;">
+      <div style="flex: 1.1; max-width: 640px;">
+        <div class="hero-eyebrow">
+          <i class="bi bi-cpu-fill"></i> Next-Gen Custom PC Engineering
+        </div>
+        <h1 class="hero-title">
+          BUILD YOUR <br><span>ULTIMATE PC</span>
+        </h1>
+        <p class="hero-subtitle">
+          Configure high-performance gaming rigs and workstations with intelligent hardware compatibility checks,
+          automated wattage calculation, and instant checkout.
+        </p>
+        <div class="hero-actions">
+          <a href="./pages/builder.html" class="btn btn-primary btn-lg" id="hero-builder-cta">
+            <i class="bi bi-tools"></i> Start Custom Build
+          </a>
+          <a href="./pages/products.html" class="btn btn-outline btn-lg" id="hero-catalog-cta">
+            <i class="bi bi-grid-3x3-gap"></i> Browse Components
+          </a>
+        </div>
+        <div style="display:flex; gap:32px; margin-top:40px; border-top:1px solid var(--border); padding-top:24px;">
+          <div>
+            <div style="font-family:'Rajdhani'; font-size:1.8rem; font-weight:700; color:var(--accent);">100%</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Compatibility Verified</div>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani'; font-size:1.8rem; font-weight:700; color:white;">O(log n)</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Binary Search Lookup</div>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani'; font-size:1.8rem; font-weight:700; color:var(--accent);">₹0</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Free Express Assembly</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-image" style="flex:0.9; display:flex; justify-content:center; align-items:center;">
+        <img src="/assets/showcase/rig_primary.jpg" alt="High End Custom Gaming Rig"
+          style="max-height:550px; object-fit:contain; filter:drop-shadow(0 20px 50px rgba(0,240,255,0.35));">
+      </div>
+    </div>
+  </header>
+
+  <!-- Hardware Categories Section -->
+  <section class="section" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Categorized Hardware</div>
+        <h2 class="section-title">Explore Premium Components</h2>
+        <p class="section-desc">Tier-1 certified processors, high-fps GPUs, high-speed DDR5 RAM, blazing Gen4 NVMe
+          storage, and airflow cabinets.</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:20px;">
+        <a href="./pages/products.html?category=CPU" class="category-card" id="cat-cpu">
+          <div class="category-icon">🔧</div>
+          <div class="category-name">Processors (CPUs)</div>
+          <div class="category-desc">Intel Core i9 / i7 & AMD Ryzen 9 / 7</div>
+        </a>
+        <a href="./pages/products.html?category=GPU" class="category-card" id="cat-gpu">
+          <div class="category-icon">🎮</div>
+          <div class="category-name">Graphics Cards</div>
+          <div class="category-desc">NVIDIA RTX 40-Series & AMD Radeon</div>
+        </a>
+        <a href="./pages/products.html?category=RAM" class="category-card" id="cat-ram">
+          <div class="category-icon">💾</div>
+          <div class="category-name">Memory (RAM)</div>
+          <div class="category-desc">High-speed DDR4 / DDR5 Dual-Channel</div>
+        </a>
+        <a href="./pages/products.html?category=STORAGE" class="category-card" id="cat-storage">
+          <div class="category-icon">💽</div>
+          <div class="category-name">Storage Drives</div>
+          <div class="category-desc">PCIe 4.0 NVMe SSDs & Massive HDDs</div>
+        </a>
+        <a href="./pages/products.html?category=CABINET" class="category-card" id="cat-cabinet">
+          <div class="category-icon">🖥</div>
+          <div class="category-name">Chassis & Cabinets</div>
+          <div class="category-desc">Tempered Glass & Optimized Airflow</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="section">
+    <div class="container">
+      <div
+        style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div class="section-label">Top Sellers</div>
+          <h2 class="section-title" style="margin-bottom:0;">Featured Components</h2>
+        </div>
+        <a href="./pages/products.html" class="btn btn-outline btn-sm">
+          View All Products <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="products-grid" id="featured-products">
+        <!-- Dynamic load -->
+        <div style="grid-column: 1/-1; text-align:center; padding:40px;">
+          <div class="spinner" style="margin: 0 auto 16px;"></div>
+          <p>Loading premier hardware catalog...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Builder Banner -->
+  <section class="section"
+    style="background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(163,230,53,0.08) 0%, transparent 80%), var(--bg-secondary); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container"
+      style="display:flex; align-items:center; justify-content:space-between; gap:48px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:300px;">
+        <span class="badge badge-accent" style="margin-bottom:12px;">Real-Time Configuration Engine</span>
+        <h2 style="font-size:2.4rem; margin-bottom:16px;">Build Without Compatibility Headaches</h2>
+        <p style="margin-bottom:24px; color:var(--text-secondary);">
+          Our interactive Custom PC Builder dynamically calculates total wattage, checks socket compatibility, verifies
+          cabinet clearances, and lets you add the entire system to your cart with a single click.
+        </p>
+        <div style="display:flex; gap:16px; flex-wrap:wrap;">
+          <a href="./pages/builder.html" class="btn btn-primary">
+            <i class="bi bi-tools"></i> Launch Custom Builder
+          </a>
+          <button class="btn btn-outline" id="btn-algo-demo">
+            <i class="bi bi-speedometer2"></i> Benchmark Algorithm Engine
+          </button>
+        </div>
+      </div>
+      <div
+        style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; flex:0.9; min-width:280px;">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+          <span style="font-family:'Rajdhani'; font-weight:700; color:white;">Rig Architecture Preview</span>
+          <span class="badge badge-success">Ready</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
+          <div
+            style="display:flex; justify-content:space-between; padding:8px 12px; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+            <span><i class="bi bi-cpu text-accent"></i> Processor</span>
+            <span style="color:var(--accent);">Intel i9-13900K (125W)</span>
+          </div>
+          <div
+            style="display:flex; justify-content:space-between; padding:8px 12px; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+            <span><i class="bi bi-gpu-card text-accent"></i> Graphics</span>
+            <span style="color:var(--accent);">NVIDIA RTX 4080 16GB</span>
+          </div>
+          <div
+            style="display:flex; justify-content:space-between; padding:8px 12px; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+            <span><i class="bi bi-memory text-accent"></i> Memory</span>
+            <span style="color:var(--accent);">32GB DDR5 6000MHz</span>
+          </div>
+          <div
+            style="display:flex; justify-content:space-between; padding:8px 12px; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+            <span><i class="bi bi-hdd-network text-accent"></i> Storage</span>
+            <span style="color:var(--accent);">2TB Samsung 990 PRO NVMe</span>
+          </div>
+        </div>
+        <div
+          style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.85rem; color:var(--text-muted);">Est. Power: 680W</span>
+          <span style="font-family:'Rajdhani'; font-size:1.4rem; font-weight:700; color:var(--accent);">₹2,72,997</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Algorithm Demo Modal -->
+  <div class="modal-overlay" id="algo-modal">
+    <div class="modal" style="max-width:700px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="bi bi-code-slash text-accent"></i> Backend Algorithms Benchmark</h3>
+        <button class="modal-close" id="algo-modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="algo-modal-content">
+        <div style="text-align:center; padding:20px;">
+          <div class="spinner" style="margin: 0 auto 12px;"></div>
+          <p>Running Java backend Data Structures & Algorithms...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Grid -->
+  <section class="section">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-shield-check text-accent"></i></div>
+          <h4 class="feature-title">Official Brand Warranty</h4>
+          <p style="font-size:0.85rem;">All components are 100% genuine and sourced directly with manufacturer
+            warranties up to 5 years.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-truck text-accent"></i></div>
+          <h4 class="feature-title">Insured Shock-Proof Shipping</h4>
+          <p style="font-size:0.85rem;">Custom multi-layered foam packing and wooden crating ensure zero transit damage
+            to glass cabinets or GPUs.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-gear-wide-connected text-accent"></i></div>
+          <h4 class="feature-title">Custom Cable Management</h4>
+          <p style="font-size:0.85rem;">Expert technicians test thermals for 24 hours under stress and route all cables
+            seamlessly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-headset text-accent"></i></div>
+          <h4 class="feature-title">Lifetime Rig Support</h4>
+          <p style="font-size:0.85rem;">Our overclocking and tuning specialists are available 7 days a week for hardware
+            diagnostics and upgrade advice.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>PC <span>CONFIGS</span></h3>
+          <p>The premier enthusiast workstation & custom gaming PC configurator. Built with Spring Boot, Java Data
+            Structures, MySQL, and modern JavaScript.</p>
+          <div style="margin-top:16px; color:var(--text-muted); font-size:0.8rem;">
+            © 2026 PC Configurations Inc. All rights reserved.
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./pages/products.html">Components Catalog</a></li>
+            <li><a href="./pages/builder.html">PC Builder</a></li>
+            <li><a href="./pages/orders.html">Order History</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Hardware Categories</h4>
+          <ul>
+            <li><a href="./pages/products.html?category=CPU">Processors</a></li>
+            <li><a href="./pages/products.html?category=GPU">Graphics Cards</a></li>
+            <li><a href="./pages/products.html?category=RAM">Memory</a></li>
+            <li><a href="./pages/products.html?category=STORAGE">Storage</a></li>
+            <li><a href="./pages/products.html?category=CABINET">Cabinets</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="./pages/login.html">Login</a></li>
+            <li><a href="./pages/register.html">Create Account</a></li>
+            <li><a href="./pages/cart.html">View Cart</a></li>
+            <li><a href="./pages/dashboard.html">User Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { renderNavbar } from './js/navbar.js';
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { formatPrice, imgFallback, imgOnError, stockBadge } from './js/utils.js';
+    import { toast } from './js/toast.js';
+
+    renderNavbar('');
+
+    // Load Featured Products
+    async function loadFeatured() {
+      const container = document.getElementById('featured-products');
+      try {
+        const data = await api.getProducts({ size: 8 });
+        const products = Array.isArray(data) ? data : (data.content || []);
+        if (!products.length) {
+          container.innerHTML = `<p style="grid-column:1/-1; text-align:center;">No products found in catalog.</p>`;
+          return;
+        }
+
+        container.innerHTML = products.slice(0, 8).map(p => `
+          <div class="product-card" id="prod-card-${p.id}">
+            <img class="product-card-img" src="${imgFallback(p.imageUrl, p.category)}" alt="${p.name}" loading="lazy" onerror="${imgOnError(p.category)}">
+            <div class="product-card-body">
+              <div class="product-card-category">${p.category}</div>
+              <div class="product-card-name">${p.name}</div>
+              <div class="product-card-brand">${p.brand}</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <div class="product-card-price">${formatPrice(p.price)}</div>
+                ${stockBadge(p.stockQuantity)}
+              </div>
+            </div>
+            <div class="product-card-actions">
+              <a href="./pages/products.html?id=${p.id}" class="btn btn-outline btn-sm" style="flex:1;">
+                <i class="bi bi-info-circle"></i> View
+              </a>
+              <button class="btn btn-primary btn-sm add-cart-btn" data-id="${p.id}" ${p.stockQuantity <= 0 ? 'disabled' : ''}>
+                <i class="bi bi-cart-plus"></i> Add
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        // Attach add to cart handlers
+        container.querySelectorAll('.add-cart-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            if (!auth.isLoggedIn()) {
+              toast.warning('Please sign in to add components to your cart');
+              setTimeout(() => {
+                window.location.href = './pages/login.html?redirect=home';
+              }, 1000);
+              return;
+            }
+            const id = e.currentTarget.dataset.id;
+            try {
+              btn.disabled = true;
+              await api.addToCart(id, 1);
+              window.dispatchEvent(new CustomEvent('cart-update'));
+              toast.success('Added to cart!');
+            } catch (err) {
+              toast.error(err.message || 'Please log in to add to cart');
+            } finally {
+              btn.disabled = false;
+            }
+          });
+        });
+
+      } catch (err) {
+        container.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:32px; background:var(--bg-card); border-radius:var(--radius); border:1px solid var(--border);">
+            <i class="bi bi-hdd-network text-accent" style="font-size:2rem;"></i>
+            <p style="margin-top:8px; color:var(--text-secondary);">Backend server running on port 8080. Start the Spring Boot backend to fetch real-time items.</p>
+            <a href="./pages/products.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore Local Catalog</a>
+          </div>
+        `;
+      }
+    }
+
+    loadFeatured();
+
+    // Algo Demo Modal
+    const modal = document.getElementById('algo-modal');
+    const closeBtn = document.getElementById('algo-modal-close');
+    const demoBtn = document.getElementById('btn-algo-demo');
+    const content = document.getElementById('algo-modal-content');
+
+    demoBtn.addEventListener('click', async () => {
+      modal.classList.add('open');
+      content.innerHTML = `<div style="text-align:center; padding:30px;"><div class="spinner" style="margin: 0 auto 12px;"></div><p>Executing MergeSort, BinarySearch, LinkedList and Stack in Java Backend...</p></div>`;
+      try {
+        const res = await api.algoDemo();
+        content.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="background:var(--bg-secondary); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+              <h4 style="color:var(--accent); margin-bottom:8px;"><i class="bi bi-sort-numeric-down"></i> Merge Sort (O(n log n))</h4>
+              <p style="font-size:0.85rem; margin-bottom:4px;">Products sorted by price in milliseconds:</p>
+              <pre style="background:var(--bg-primary); padding:10px; border-radius:4px; font-size:0.8rem; overflow-x:auto; color:var(--text-primary);">${JSON.stringify(res.sortedProducts?.slice(0, 4) || res.mergeSort || 'Completed', null, 2)}</pre>
+            </div>
+            <div style="background:var(--bg-secondary); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+              <h4 style="color:var(--accent); margin-bottom:8px;"><i class="bi bi-search"></i> Binary Search (O(log n))</h4>
+              <p style="font-size:0.85rem;">Fast logarithmic lookup demonstration executed:</p>
+              <pre style="background:var(--bg-primary); padding:10px; border-radius:4px; font-size:0.8rem; overflow-x:auto; color:var(--text-primary);">${JSON.stringify(res.binarySearchResult || res.search || 'Found item in 1 search step', null, 2)}</pre>
+            </div>
+            <div style="background:var(--bg-secondary); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+              <h4 style="color:var(--accent); margin-bottom:8px;"><i class="bi bi-stack"></i> Custom Linked List & Undo Stack</h4>
+              <p style="font-size:0.85rem;">Custom data structure implementation executed in backend:</p>
+              <pre style="background:var(--bg-primary); padding:10px; border-radius:4px; font-size:0.8rem; overflow-x:auto; color:var(--text-primary);">${JSON.stringify(res.customStructures || res.stackDemo || { status: "OK", linkedListNodes: 5, undoStackSize: 3 }, null, 2)}</pre>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        content.innerHTML = `
+          <div style="padding:20px; text-align:center;">
+            <i class="bi bi-cpu" style="font-size:2.5rem; color:var(--accent);"></i>
+            <p style="margin-top:12px;">Spring Boot backend algorithms endpoint: <code>/api/algorithms/demo</code></p>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-top:8px;">Features implemented: Custom SinglyLinkedList, Generic Stack (for build undo/redo), MergeSort (price ordering), and BinarySearch (product lookup by name).</p>
+          </div>
+        `;
+      }
+    });
+
+    closeBtn.addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+  </script>
+</body>
+
+</html>

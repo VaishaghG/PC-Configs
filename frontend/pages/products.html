@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Catalog — PC Configurations</title>
+  <meta name="description" content="Explore high performance PC components with real-time stock, verified benchmarks and instant cart addition.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <main class="page-main">
+    <div class="container" style="padding-top: 36px; padding-bottom: 60px;">
+      
+      <!-- Page Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px;">
+        <div>
+          <div class="section-label">Inventory & Hardware</div>
+          <h1 style="font-size:2.4rem; margin-bottom:4px;">PC Components Catalog</h1>
+          <p>Browse tier-1 verified components or select parts directly for your custom build.</p>
+        </div>
+        <a href="./builder.html" class="btn btn-primary btn-sm">
+          <i class="bi bi-tools"></i> Open PC Builder
+        </a>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="filter-bar">
+        <div class="search-bar">
+          <i class="bi bi-search search-icon"></i>
+          <input type="text" id="catalog-search" placeholder="Search CPU, RTX 4090, DDR5, Samsung SSD...">
+        </div>
+
+        <div class="filter-group" id="category-filters">
+          <button class="filter-btn active" data-cat="ALL">All Categories</button>
+          <button class="filter-btn" data-cat="CPU">CPUs</button>
+          <button class="filter-btn" data-cat="GPU">GPUs</button>
+          <button class="filter-btn" data-cat="RAM">RAM</button>
+          <button class="filter-btn" data-cat="STORAGE">Storage</button>
+          <button class="filter-btn" data-cat="CABINET">Cabinets</button>
+        </div>
+
+        <select class="sort-select" id="sort-select">
+          <option value="featured">Sort: Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A to Z</option>
+        </select>
+
+        <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-secondary); cursor:pointer; user-select:none; margin-left:auto;">
+          <input type="checkbox" id="in-stock-only" style="accent-color:var(--accent); width:16px; height:16px;">
+          In Stock Only
+        </label>
+      </div>
+
+      <!-- Active Filter Status & Item Count -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; font-size:0.85rem; color:var(--text-muted);">
+        <span id="catalog-count">Showing components...</span>
+        <span id="algo-indicator" class="badge badge-accent" style="display:none;"></span>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="products-grid">
+        <div style="grid-column:1/-1; text-align:center; padding:60px;">
+          <div class="spinner" style="margin:0 auto 16px;"></div>
+          <p>Loading catalog items from backend...</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Product Detail Modal -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-product-title">Component Details</h3>
+        <button class="modal-close" id="modal-product-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-product-body">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container" style="text-align:center; color:var(--text-muted); font-size:0.85rem;">
+      <p>© 2026 PC Configurations. Powered by Java Spring Boot & High-Performance Data Structures.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { renderNavbar } from '../js/navbar.js';
+    import { api } from '../js/api.js';
+    import { auth } from '../js/auth.js';
+    import { formatPrice, imgFallback, imgOnError, stockBadge, stockClass, debounce } from '../js/utils.js';
+    import { toast } from '../js/toast.js';
+
+    renderNavbar('products');
+
+    let allProducts = [];
+    let currentCategory = 'ALL';
+    let searchQuery = '';
+    let currentSort = 'featured';
+    let inStockOnly = false;
+
+    // Check query params
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('category')) {
+      currentCategory = urlParams.get('category').toUpperCase();
+    }
+    const targetId = urlParams.get('id');
+
+    // Update active filter button
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      if (btn.dataset.cat === currentCategory) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.dataset.cat;
+        renderProducts();
+      });
+    });
+
+    document.getElementById('sort-select').addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      renderProducts();
+    });
+
+    document.getElementById('in-stock-only').addEventListener('change', (e) => {
+      inStockOnly = e.target.checked;
+      renderProducts();
+    });
+
+    document.getElementById('catalog-search').addEventListener('input', debounce((e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      renderProducts();
+    }, 250));
+
+    async function fetchProducts() {
+      try {
+        const data = await api.getProducts({ size: 100 });
+        allProducts = Array.isArray(data) ? data : (data.content || []);
+        renderProducts();
+
+        if (targetId) {
+          const matched = allProducts.find(p => p.id == targetId);
+          if (matched) showProductDetails(matched);
+        }
+      } catch (err) {
+        document.getElementById('products-grid').innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:48px; background:var(--bg-card); border-radius:var(--radius); border:1px solid var(--border);">
+            <i class="bi bi-exclamation-triangle text-accent" style="font-size:2rem;"></i>
+            <p style="margin-top:12px; font-weight:600;">Unable to connect to backend service</p>
+            <p style="color:var(--text-muted); font-size:0.85rem;">Ensure Spring Boot is running at http://localhost:8080</p>
+            <button class="btn btn-outline btn-sm" onclick="location.reload()" style="margin-top:14px;">
+              <i class="bi bi-arrow-clockwise"></i> Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      const countEl = document.getElementById('catalog-count');
+
+      let filtered = [...allProducts];
+
+      // Filter by category
+      if (currentCategory !== 'ALL') {
+        filtered = filtered.filter(p => p.category === currentCategory);
+      }
+
+      // Filter by stock
+      if (inStockOnly) {
+        filtered = filtered.filter(p => p.stockQuantity > 0);
+      }
+
+      // Filter by search
+      if (searchQuery) {
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(searchQuery) ||
+          p.brand.toLowerCase().includes(searchQuery) ||
+          (p.description && p.description.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      // Sort
+      if (currentSort === 'price-asc') {
+        filtered.sort((a, b) => Number(a.price) - Number(b.price));
+      } else if (currentSort === 'price-desc') {
+        filtered.sort((a, b) => Number(b.price) - Number(a.price));
+      } else if (currentSort === 'name-asc') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      countEl.textContent = `Showing ${filtered.length} of ${allProducts.length} components`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:48px; background:var(--bg-card); border-radius:var(--radius); border:1px solid var(--border);">
+            <i class="bi bi-search text-accent" style="font-size:2rem;"></i>
+            <h4 style="margin-top:12px;">No matching components found</h4>
+            <p style="color:var(--text-muted); font-size:0.85rem;">Try adjusting your search terms or filter selections.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card" id="product-${p.id}">
+          <img class="product-card-img" src="${imgFallback(p.imageUrl, p.category)}" alt="${p.name}" loading="lazy" onerror="${imgOnError(p.category)}">
+          <div class="product-card-body">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="product-card-category">${p.category}</span>
+              ${stockBadge(p.stockQuantity)}
+            </div>
+            <div class="product-card-name">${p.name}</div>
+            <div class="product-card-brand">${p.brand}</div>
+            <div class="product-card-price">${formatPrice(p.price)}</div>
+          </div>
+          <div class="product-card-actions">
+            <button class="btn btn-outline btn-sm view-details-btn" data-id="${p.id}" style="flex:1;">
+              <i class="bi bi-eye"></i> Details
+            </button>
+            <button class="btn btn-primary btn-sm add-cart-btn" data-id="${p.id}" ${p.stockQuantity <= 0 ? 'disabled' : ''}>
+              <i class="bi bi-cart-plus"></i> Add
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      // Detail listeners
+      grid.querySelectorAll('.view-details-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const prod = allProducts.find(p => p.id == btn.dataset.id);
+          if (prod) showProductDetails(prod);
+        });
+      });
+
+      // Cart listeners
+      grid.querySelectorAll('.add-cart-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!auth.isLoggedIn()) {
+            toast.warning('Please sign in to add components to your cart');
+            setTimeout(() => {
+              window.location.href = './login.html?redirect=products';
+            }, 1000);
+            return;
+          }
+          const id = btn.dataset.id;
+          try {
+            btn.disabled = true;
+            await api.addToCart(id, 1);
+            window.dispatchEvent(new CustomEvent('cart-update'));
+            toast.success('Added to cart!');
+          } catch (err) {
+            toast.error(err.message || 'Please log in to add items to your cart.');
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      });
+    }
+
+    // Modal
+    const modal = document.getElementById('product-modal');
+    const modalBody = document.getElementById('modal-product-body');
+    const modalTitle = document.getElementById('modal-product-title');
+    const modalClose = document.getElementById('modal-product-close');
+
+    function showProductDetails(prod) {
+      modalTitle.textContent = prod.name;
+      modalBody.innerHTML = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+          <div>
+            <img src="${imgFallback(prod.imageUrl, prod.category)}" alt="${prod.name}" style="width:100%; border-radius:var(--radius); border:1px solid var(--border);">
+            <div style="margin-top:14px; display:flex; gap:8px;">
+              <span class="badge badge-accent">${prod.category}</span>
+              <span class="badge badge-info">${prod.brand}</span>
+              ${stockBadge(prod.stockQuantity)}
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani'; font-size:2rem; font-weight:700; color:var(--accent); margin-bottom:12px;">
+              ${formatPrice(prod.price)}
+            </div>
+            <p style="font-size:0.9rem; margin-bottom:16px;">${prod.description || 'High-performance computing component built for enthusiast reliability.'}</p>
+            
+            <div style="background:var(--bg-secondary); padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border); margin-bottom:20px;">
+              <div style="font-weight:700; font-size:0.85rem; margin-bottom:8px; color:var(--text-secondary);">SPECIFICATIONS</div>
+              <pre style="font-size:0.8rem; color:var(--text-primary); white-space:pre-wrap; font-family:'Inter', sans-serif;">${prod.specifications || 'Standard manufacturer specifications apply.'}</pre>
+            </div>
+
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-primary" id="modal-add-cart" ${prod.stockQuantity <= 0 ? 'disabled' : ''} style="flex:1;">
+                <i class="bi bi-cart-plus"></i> Add to Cart
+              </button>
+              <a href="./builder.html?slot=${prod.category.toLowerCase()}&id=${prod.id}" class="btn btn-outline" style="flex:1;">
+                <i class="bi bi-tools"></i> Use in PC Build
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('modal-add-cart').onclick = async () => {
+        if (!auth.isLoggedIn()) {
+          toast.warning('Please sign in to add components to your cart');
+          setTimeout(() => {
+            window.location.href = './login.html?redirect=products';
+          }, 1000);
+          return;
+        }
+        try {
+          await api.addToCart(prod.id, 1);
+          window.dispatchEvent(new CustomEvent('cart-update'));
+          toast.success(`Added ${prod.name} to cart!`);
+          modal.classList.remove('open');
+        } catch (err) {
+          toast.error(err.message || 'Please log in first.');
+        }
+      };
+
+      modal.classList.add('open');
+    }
+
+    modalClose.onclick = () => modal.classList.remove('open');
+    modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
+
+    fetchProducts();
+  </script>
+</body>
+</html>

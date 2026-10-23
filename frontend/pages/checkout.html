@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout & Payment — PC Configurations</title>
+  <meta name="description" content="Secure checkout, fast courier fulfillment, and multi-gateway payment processing.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <main class="page-main">
+    <div class="container" style="padding-top: 36px; padding-bottom: 60px;">
+      
+      <!-- Checkout Header -->
+      <div style="margin-bottom:28px;">
+        <div class="section-label">Order Finalization</div>
+        <h1 style="font-size:2.4rem; margin-bottom:4px;">Secure Checkout</h1>
+        <p>Complete your shipping information and choose a preferred payment method.</p>
+      </div>
+
+      <div class="cart-layout" style="align-items:start;">
+
+        <!-- Left: Address & Payment Method Form -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+
+          <!-- Step 1: Shipping Address -->
+          <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+              <span style="width:28px; height:28px; border-radius:50%; background:var(--accent); color:var(--bg-primary); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem;">1</span>
+              <h3 style="font-family:'Rajdhani'; font-size:1.3rem; margin:0;">Shipping & Contact Information</h3>
+            </div>
+
+            <form id="shipping-form" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group" style="grid-column:1/-1;">
+                <label class="form-label">Full Name *</label>
+                <input type="text" id="ship-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Phone Number *</label>
+                <input type="tel" id="ship-phone" class="form-control" placeholder="+91 98765 43210" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" id="ship-email" class="form-control" placeholder="rahul@example.com" required>
+              </div>
+
+              <div class="form-group" style="grid-column:1/-1;">
+                <label class="form-label">Street Address *</label>
+                <input type="text" id="ship-address" class="form-control" placeholder="House/Flat No., Building Name, Street" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">City *</label>
+                <input type="text" id="ship-city" class="form-control" placeholder="Bengaluru / Mumbai / Delhi" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Postal / PIN Code *</label>
+                <input type="text" id="ship-pincode" class="form-control" placeholder="560001" required>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 2: Payment Method -->
+          <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+              <span style="width:28px; height:28px; border-radius:50%; background:var(--accent); color:var(--bg-primary); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem;">2</span>
+              <h3 style="font-family:'Rajdhani'; font-size:1.3rem; margin:0;">Select Payment Gateway</h3>
+            </div>
+
+            <!-- Payment Options -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;" id="payment-options">
+              
+              <label class="payment-card active" style="padding:16px; border:2px solid var(--accent); border-radius:var(--radius-sm); background:var(--accent-dark); cursor:pointer; display:flex; align-items:center; gap:12px;">
+                <input type="radio" name="paymentMethod" value="UPI" checked style="accent-color:var(--accent);">
+                <div>
+                  <div style="font-weight:700; font-size:0.95rem; color:var(--text-primary);"><i class="bi bi-qr-code text-accent"></i> UPI (Instant)</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">GPay, PhonePe, Paytm, BHIM</div>
+                </div>
+              </label>
+
+              <label class="payment-card" style="padding:16px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-secondary); cursor:pointer; display:flex; align-items:center; gap:12px;">
+                <input type="radio" name="paymentMethod" value="CARD" style="accent-color:var(--accent);">
+                <div>
+                  <div style="font-weight:700; font-size:0.95rem; color:var(--text-primary);"><i class="bi bi-credit-card text-accent"></i> Credit / Debit Card</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Visa, MasterCard, RuPay</div>
+                </div>
+              </label>
+
+              <label class="payment-card" style="padding:16px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-secondary); cursor:pointer; display:flex; align-items:center; gap:12px;">
+                <input type="radio" name="paymentMethod" value="NET_BANKING" style="accent-color:var(--accent);">
+                <div>
+                  <div style="font-weight:700; font-size:0.95rem; color:var(--text-primary);"><i class="bi bi-bank text-accent"></i> Net Banking</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">All major Indian banks</div>
+                </div>
+              </label>
+
+              <label class="payment-card" style="padding:16px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-secondary); cursor:pointer; display:flex; align-items:center; gap:12px;">
+                <input type="radio" name="paymentMethod" value="CASH_ON_DELIVERY" style="accent-color:var(--accent);">
+                <div>
+                  <div style="font-weight:700; font-size:0.95rem; color:var(--text-primary);"><i class="bi bi-cash-stack text-accent"></i> Cash on Delivery</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Pay upon courier handover</div>
+                </div>
+              </label>
+
+            </div>
+
+            <!-- Dynamic Payment Details Box -->
+            <div id="payment-details-box" style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px;">
+              <div id="upi-details">
+                <label class="form-label">Virtual Payment Address (VPA / UPI ID)</label>
+                <input type="text" id="upi-vpa" class="form-control" placeholder="yourname@okhdfcbank or yourname@paytm" value="user@okaxis">
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:6px;">
+                  A collect request will be pushed directly to your UPI application.
+                </div>
+              </div>
+              <div id="card-details" style="display:none;">
+                <div class="form-group" style="margin-bottom:12px;">
+                  <label class="form-label">Card Number</label>
+                  <input type="text" class="form-control" placeholder="•••• •••• •••• 4242" value="4532 8921 7382 4242">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <div class="form-group">
+                    <label class="form-label">Expiry (MM/YY)</label>
+                    <input type="text" class="form-control" placeholder="12/28" value="08/29">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">CVV</label>
+                    <input type="password" class="form-control" placeholder="•••" value="888" maxlength="3">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right: Order Summary -->
+        <aside style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; position:sticky; top:calc(var(--nav-h) + 20px);">
+          <h3 style="font-family:'Rajdhani'; font-size:1.3rem; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+            Order Review
+          </h3>
+
+          <div id="checkout-items-list" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:16px; padding-right:4px;">
+            <!-- Rendered via JS -->
+          </div>
+
+          <div style="border-top:1px solid var(--border); padding-top:14px; display:flex; flex-direction:column; gap:10px; font-size:0.9rem;">
+            <div style="display:flex; justify-content:space-between; color:var(--text-secondary);">
+              <span>Subtotal</span>
+              <span id="chk-subtotal" style="color:var(--text-primary); font-weight:600;">₹0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; color:var(--text-secondary);">
+              <span>Express Insured Shipping</span>
+              <span style="color:var(--green); font-weight:600;">FREE</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; color:var(--text-secondary);">
+              <span>Assembly & Cable Routing</span>
+              <span style="color:var(--green); font-weight:600;">COMPLIMENTARY</span>
+            </div>
+          </div>
+
+          <div style="padding-top:16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:20px;">
+            <span style="font-weight:600; color:var(--text-primary);">Total Amount</span>
+            <span id="chk-total" style="font-family:'Rajdhani'; font-size:1.8rem; font-weight:700; color:var(--accent);">₹0</span>
+          </div>
+
+          <button class="btn btn-primary btn-full btn-lg" id="btn-place-order">
+            <i class="bi bi-lock-fill"></i> Place Order & Pay
+          </button>
+          
+          <div style="margin-top:16px; text-align:center; font-size:0.75rem; color:var(--text-muted);">
+            By placing order, you agree to PC Configurations Terms of Sale and Brand Replacement Guarantee.
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Success Order Modal -->
+  <div class="modal-overlay" id="order-success-modal">
+    <div class="modal" style="max-width:520px; text-align:center;">
+      <div class="modal-body" style="padding:36px 24px;">
+        <div style="width:64px; height:64px; border-radius:50%; background:rgba(34,197,94,0.15); border:2px solid var(--green); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2rem; color:var(--green);">
+          <i class="bi bi-check-lg"></i>
+        </div>
+        <h2 style="font-family:'Rajdhani'; font-size:2rem; margin-bottom:8px;">Order Successfully Placed!</h2>
+        <p style="color:var(--text-secondary); margin-bottom:20px;">Thank you for choosing PC Configurations. Your customized order is now being queued in our technician assembly bench.</p>
+        
+        <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; margin-bottom:24px; text-align:left; font-size:0.9rem;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="color:var(--text-muted);">Order Reference:</span>
+            <span id="confirmed-order-id" style="font-weight:700; color:var(--accent);">#PC-0000</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="color:var(--text-muted);">Payment Method:</span>
+            <span id="confirmed-payment-method" style="font-weight:600; color:white;">UPI</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--text-muted);">Est. Delivery:</span>
+            <span id="confirmed-delivery-date" style="font-weight:600; color:var(--green);">3 - 5 Business Days</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <a href="./orders.html" class="btn btn-primary" style="flex:1;">
+            <i class="bi bi-box-seam"></i> View Order Details
+          </a>
+          <a href="../index.html" class="btn btn-outline" style="flex:1;">
+            Return to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container" style="text-align:center; color:var(--text-muted); font-size:0.85rem;">
+      <p>© 2026 PC Configurations. Precision Gaming Gear & Custom Systems.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { renderNavbar } from '../js/navbar.js';
+    import { api } from '../js/api.js';
+    import { formatPrice, imgFallback } from '../js/utils.js';
+    import { toast } from '../js/toast.js';
+    import { auth } from '../js/auth.js';
+
+    renderNavbar('cart');
+
+    let currentCart = null;
+    let selectedPayment = 'UPI';
+
+    async function initCheckout() {
+      if (!auth.isLoggedIn()) {
+        toast.warning('Please log in before accessing checkout');
+        window.location.href = './login.html?redirect=checkout';
+        return;
+      }
+
+      // Pre-fill user profile info if present
+      const user = auth.getUser();
+      if (user) {
+        if (user.fullName) document.getElementById('ship-name').value = user.fullName;
+        if (user.email) document.getElementById('ship-email').value = user.email;
+      }
+
+      try {
+        currentCart = await api.getCart();
+        const items = currentCart?.items || [];
+        if (items.length === 0) {
+          toast.info('Your cart is empty');
+          window.location.href = './cart.html';
+          return;
+        }
+
+        renderReview();
+      } catch (err) {
+        toast.error('Failed to load cart for checkout.');
+        window.location.href = './cart.html';
+      }
+    }
+
+    function renderReview() {
+      const itemsList = document.getElementById('checkout-items-list');
+      const items = currentCart.items;
+
+      itemsList.innerHTML = items.map(item => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-secondary); padding:8px 12px; border-radius:var(--radius-sm); font-size:0.85rem;">
+          <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px;">
+            <span style="font-weight:600;">${item.productName}</span>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Qty: ${item.quantity} × ${formatPrice(item.unitPrice)}</div>
+          </div>
+          <span style="font-weight:700; color:var(--accent);">${formatPrice(item.subtotal)}</span>
+        </div>
+      `).join('');
+
+      const total = Number(currentCart.total || 0);
+      document.getElementById('chk-subtotal').textContent = formatPrice(total);
+      document.getElementById('chk-total').textContent = formatPrice(total);
+    }
+
+    // Payment method radio selection
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        selectedPayment = e.target.value;
+        document.querySelectorAll('.payment-card').forEach(c => {
+          c.classList.remove('active');
+          c.style.borderColor = 'var(--border)';
+          c.style.background = 'var(--bg-secondary)';
+        });
+        const card = e.target.closest('.payment-card');
+        card.classList.add('active');
+        card.style.borderColor = 'var(--accent)';
+        card.style.background = 'var(--accent-dark)';
+
+        // Toggle details
+        const upiBox = document.getElementById('upi-details');
+        const cardBox = document.getElementById('card-details');
+        if (selectedPayment === 'UPI') {
+          upiBox.style.display = 'block';
+          cardBox.style.display = 'none';
+        } else if (selectedPayment === 'CARD') {
+          upiBox.style.display = 'none';
+          cardBox.style.display = 'block';
+        } else {
+          upiBox.style.display = 'none';
+          cardBox.style.display = 'none';
+        }
+      });
+    });
+
+    // Place Order
+    document.getElementById('btn-place-order').onclick = async function() {
+      const name = document.getElementById('ship-name').value.trim();
+      const phone = document.getElementById('ship-phone').value.trim();
+      const address = document.getElementById('ship-address').value.trim();
+      const city = document.getElementById('ship-city').value.trim();
+      const pin = document.getElementById('ship-pincode').value.trim();
+
+      if (!name || !phone || !address || !city || !pin) {
+        toast.warning('Please complete all required shipping fields');
+        return;
+      }
+
+      this.disabled = true;
+      this.innerHTML = `<span class="spinner"></span> Processing Transaction...`;
+
+      try {
+        const order = await api.createOrder({
+          paymentMethod: selectedPayment
+        });
+
+        // Broadcast cart clear
+        window.dispatchEvent(new CustomEvent('cart-update'));
+
+        // Show confirmation modal
+        document.getElementById('confirmed-order-id').textContent = `#PC-${String(order.id).padStart(5, '0')}`;
+        document.getElementById('confirmed-payment-method').textContent = selectedPayment;
+        
+        const deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + 4);
+        document.getElementById('confirmed-delivery-date').textContent = deliveryDate.toLocaleDateString('en-IN', {
+          weekday: 'short', month: 'short', day: 'numeric'
+        });
+
+        document.getElementById('order-success-modal').classList.add('open');
+      } catch (err) {
+        toast.error(err.message || 'Payment processing failed. Please check cart and stock.');
+        this.disabled = false;
+        this.innerHTML = `<i class="bi bi-lock-fill"></i> Place Order & Pay`;
+      }
+    };
+
+    initCheckout();
+  </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — PC Configurations</title>
+  <meta name="description" content="Sign up for PC Configurations to save custom PC builds and order enthusiast gaming hardware.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="../index.html">
+        <h1>PC <span>CONFIGS</span></h1>
+      </a>
+      <p style="font-size:0.85rem; margin-top:6px; color:var(--text-muted);">Create your account to start engineering custom rigs.</p>
+    </div>
+
+    <form class="auth-form" id="register-form">
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Full Name *</label>
+        <input type="text" id="reg-name" class="form-control" placeholder="e.g. Vikramaditya Rao" required autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-email">Email Address *</label>
+        <input type="email" id="reg-email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-password">Password *</label>
+        <input type="password" id="reg-password" class="form-control" placeholder="Minimum 6 characters" minlength="6" required autocomplete="new-password">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-confirm-password">Confirm Password *</label>
+        <input type="password" id="reg-confirm-password" class="form-control" placeholder="Re-enter password" minlength="6" required autocomplete="new-password">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full" id="btn-submit-register">
+        Create Account
+      </button>
+    </form>
+
+    <div class="auth-divider" style="margin:24px 0;"><span>OR</span></div>
+
+    <div style="text-align:center; font-size:0.85rem; color:var(--text-secondary);">
+      Already have an account? 
+      <a href="./login.html" style="font-weight:600; color:var(--accent);">Sign in here</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { api } from '../js/api.js';
+    import { auth } from '../js/auth.js';
+    import { toast } from '../js/toast.js';
+
+    const form = document.getElementById('register-form');
+    const submitBtn = document.getElementById('btn-submit-register');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm-password').value;
+
+      if (!fullName || !email || !password) return;
+
+      if (password !== confirm) {
+        toast.warning('Passwords do not match');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner"></span> Creating Account...`;
+
+      try {
+        const res = await api.register({ fullName, email, password });
+        auth.setUser(res.token, {
+          id: res.userId,
+          email: res.email,
+          fullName: res.fullName,
+          role: res.role
+        });
+
+        toast.success(`Account created! Welcome, ${res.fullName}!`);
+        setTimeout(() => {
+          window.location.href = './dashboard.html';
+        }, 600);
+
+      } catch (err) {
+        toast.error(err.message || 'Registration failed. Email may already be registered.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `Create Account`;
+      }
+    });
+  </script>
+</body>
+</html>

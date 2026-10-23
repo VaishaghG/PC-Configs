@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart — PC Configurations</title>
+  <meta name="description" content="Review your custom PC components and accessories before proceeding to secure checkout.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <main class="page-main">
+    <div class="container" style="padding-top: 36px; padding-bottom: 60px;">
+      
+      <!-- Cart Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px;">
+        <div>
+          <div class="section-label">Your Hardware Selection</div>
+          <h1 style="font-size:2.4rem; margin-bottom:4px;">Shopping Cart</h1>
+          <p id="cart-item-summary">Review items and adjust quantities before placing your order.</p>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <a href="./products.html" class="btn btn-outline btn-sm">
+            <i class="bi bi-arrow-left"></i> Continue Shopping
+          </a>
+          <button class="btn btn-danger btn-sm" id="btn-clear-cart" style="display:none;">
+            <i class="bi bi-trash"></i> Clear Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Auth Warning if guest -->
+      <div id="auth-alert" style="display:none; padding:16px 20px; border-radius:var(--radius-sm); background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.25); color:var(--yellow); margin-bottom:24px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <i class="bi bi-exclamation-triangle-fill" style="font-size:1.2rem;"></i>
+          <span>You are viewing cart as a guest. Please sign in to synchronize and retain your custom cart across devices.</span>
+        </div>
+        <a href="./login.html" class="btn btn-primary btn-sm">Sign In Now</a>
+      </div>
+
+      <!-- Cart Layout -->
+      <div class="cart-layout" id="cart-container">
+        
+        <!-- Left: Items list -->
+        <div style="display:flex; flex-direction:column; gap:16px;" id="cart-items-list">
+          <div style="text-align:center; padding:60px; background:var(--bg-card); border-radius:var(--radius); border:1px solid var(--border);">
+            <div class="spinner" style="margin:0 auto 16px;"></div>
+            <p>Loading your cart items...</p>
+          </div>
+        </div>
+
+        <!-- Right: Summary Card -->
+        <aside style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; position:sticky; top:calc(var(--nav-h) + 20px);">
+          <h3 style="font-family:'Rajdhani'; font-size:1.3rem; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+            Order Summary
+          </h3>
+
+          <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px; font-size:0.9rem;">
+            <div style="display:flex; justify-content:space-between; color:var(--text-secondary);">
+              <span>Cart Subtotal</span>
+              <span id="summary-subtotal" style="color:var(--text-primary); font-weight:600;">₹0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; color:var(--text-secondary);">
+              <span>Estimated GST (18%)</span>
+              <span id="summary-gst" style="color:var(--text-primary); font-weight:600;">₹0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; color:var(--text-secondary);">
+              <span>Insured Shipping</span>
+              <span style="color:var(--green); font-weight:600;">FREE</span>
+            </div>
+          </div>
+
+          <div style="padding-top:16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <span style="font-weight:600; color:var(--text-primary);">Total Payable</span>
+            <span id="summary-total" style="font-family:'Rajdhani'; font-size:1.8rem; font-weight:700; color:var(--accent);">₹0</span>
+          </div>
+
+          <!-- Promo Code Input -->
+          <div style="display:flex; gap:8px; margin-bottom:20px;">
+            <input type="text" id="coupon-code" class="form-control" placeholder="Promo code (e.g. RIG10)" style="padding:8px 12px; font-size:0.85rem;">
+            <button class="btn btn-outline btn-sm" id="btn-apply-coupon" style="padding:8px 14px;">Apply</button>
+          </div>
+          <div id="coupon-status" style="font-size:0.75rem; margin-top:-12px; margin-bottom:16px;"></div>
+
+          <button class="btn btn-primary btn-full btn-lg" id="btn-proceed-checkout" disabled>
+            Proceed to Checkout <i class="bi bi-arrow-right"></i>
+          </button>
+
+          <div style="margin-top:16px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:0.78rem; color:var(--text-muted);">
+            <i class="bi bi-shield-lock-fill text-accent"></i> 256-Bit SSL Encrypted Checkout
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container" style="text-align:center; color:var(--text-muted); font-size:0.85rem;">
+      <p>© 2026 PC Configurations. Precision Gaming Gear & Custom Systems.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { renderNavbar } from '../js/navbar.js';
+    import { api } from '../js/api.js';
+    import { formatPrice, imgFallback, stockBadge } from '../js/utils.js';
+    import { toast } from '../js/toast.js';
+    import { auth } from '../js/auth.js';
+
+    renderNavbar('cart');
+
+    let currentCart = null;
+    let discountPercent = 0;
+
+    async function loadCart() {
+      if (!auth.isLoggedIn()) {
+        document.getElementById('auth-alert').style.display = 'flex';
+        renderEmptyCart('Please sign in to view and manage your shopping cart.');
+        return;
+      }
+
+      try {
+        currentCart = await api.getCart();
+        renderCartUI();
+      } catch (err) {
+        renderEmptyCart('Could not retrieve cart. Please try again.');
+      }
+    }
+
+    function renderEmptyCart(msg = 'Your shopping cart is currently empty.') {
+      const container = document.getElementById('cart-items-list');
+      document.getElementById('btn-clear-cart').style.display = 'none';
+      document.getElementById('btn-proceed-checkout').disabled = true;
+      document.getElementById('summary-subtotal').textContent = '₹0';
+      document.getElementById('summary-gst').textContent = '₹0';
+      document.getElementById('summary-total').textContent = '₹0';
+
+      container.innerHTML = `
+        <div style="text-align:center; padding:60px; background:var(--bg-card); border-radius:var(--radius); border:1px solid var(--border);">
+          <i class="bi bi-cart-x text-accent" style="font-size:3rem; margin-bottom:12px; display:inline-block;"></i>
+          <h3 style="font-family:'Rajdhani'; font-size:1.6rem; margin-bottom:8px;">${msg}</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">Explore our catalog or construct a custom rig in our PC Builder.</p>
+          <div style="display:flex; justify-content:center; gap:12px;">
+            <a href="./products.html" class="btn btn-outline btn-sm"><i class="bi bi-grid"></i> Browse Catalog</a>
+            <a href="./builder.html" class="btn btn-primary btn-sm"><i class="bi bi-tools"></i> Open PC Builder</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCartUI() {
+      const container = document.getElementById('cart-items-list');
+      const clearBtn = document.getElementById('btn-clear-cart');
+      const checkoutBtn = document.getElementById('btn-proceed-checkout');
+
+      const items = currentCart?.items || [];
+      if (items.length === 0) {
+        renderEmptyCart();
+        return;
+      }
+
+      clearBtn.style.display = 'inline-flex';
+      checkoutBtn.disabled = false;
+
+      container.innerHTML = items.map(item => `
+        <div class="cart-item-card" id="cart-item-${item.id}">
+          <img src="${imgFallback(item.imageUrl, item.productCategory)}" alt="${item.productName}" class="cart-item-img">
+          
+          <div class="cart-item-info">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <span class="badge badge-accent" style="font-size:0.65rem; margin-bottom:4px;">${item.productCategory}</span>
+                <div class="cart-item-name">${item.productName}</div>
+                <div class="cart-item-meta">${item.productBrand} • ${formatPrice(item.unitPrice)} each</div>
+              </div>
+              <div class="cart-item-price">${formatPrice(item.subtotal)}</div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+              <div class="qty-control">
+                <button class="qty-btn btn-qty-minus" data-id="${item.id}" data-qty="${item.quantity - 1}">-</button>
+                <span class="qty-value">${item.quantity}</span>
+                <button class="qty-btn btn-qty-plus" data-id="${item.id}" data-qty="${item.quantity + 1}">+</button>
+              </div>
+
+              <button class="btn btn-ghost btn-sm remove-item-btn" data-id="${item.id}" style="color:var(--red); padding:4px 8px;">
+                <i class="bi bi-trash"></i> Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Wire Quantity Minus
+      container.querySelectorAll('.btn-qty-minus').forEach(btn => {
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          const newQty = parseInt(btn.dataset.qty);
+          if (newQty <= 0) {
+            await removeItem(id);
+          } else {
+            await updateQty(id, newQty);
+          }
+        };
+      });
+
+      // Wire Quantity Plus
+      container.querySelectorAll('.btn-qty-plus').forEach(btn => {
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          const newQty = parseInt(btn.dataset.qty);
+          await updateQty(id, newQty);
+        };
+      });
+
+      // Wire Remove
+      container.querySelectorAll('.remove-item-btn').forEach(btn => {
+        btn.onclick = () => removeItem(btn.dataset.id);
+      });
+
+      // Compute calculations
+      const rawTotal = Number(currentCart.total || 0);
+      const discount = rawTotal * (discountPercent / 100);
+      const discountedSubtotal = rawTotal - discount;
+      const gst = discountedSubtotal * 0.18;
+      const finalPayable = discountedSubtotal; // Assuming gross prices include or display transparently
+
+      document.getElementById('summary-subtotal').textContent = formatPrice(discountedSubtotal);
+      document.getElementById('summary-gst').textContent = formatPrice(gst);
+      document.getElementById('summary-total').textContent = formatPrice(finalPayable);
+    }
+
+    async function updateQty(itemId, quantity) {
+      try {
+        currentCart = await api.updateCartItem(itemId, quantity);
+        window.dispatchEvent(new CustomEvent('cart-update'));
+        renderCartUI();
+        toast.info('Cart updated');
+      } catch (err) {
+        toast.error(err.message || 'Failed to update quantity');
+      }
+    }
+
+    async function removeItem(itemId) {
+      try {
+        currentCart = await api.removeCartItem(itemId);
+        window.dispatchEvent(new CustomEvent('cart-update'));
+        renderCartUI();
+        toast.info('Item removed from cart');
+      } catch (err) {
+        toast.error(err.message || 'Failed to remove item');
+      }
+    }
+
+    // Clear cart
+    document.getElementById('btn-clear-cart').onclick = async () => {
+      if (!confirm('Are you sure you want to remove all items from your cart?')) return;
+      try {
+        await api.clearCart();
+        currentCart = { items: [], total: 0, itemCount: 0 };
+        window.dispatchEvent(new CustomEvent('cart-update'));
+        renderEmptyCart();
+        toast.info('Cart cleared');
+      } catch (err) {
+        toast.error(err.message || 'Failed to clear cart');
+      }
+    };
+
+    // Apply Coupon
+    document.getElementById('btn-apply-coupon').onclick = () => {
+      const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+      const status = document.getElementById('coupon-status');
+      if (code === 'RIG10' || code === 'GAMER10') {
+        discountPercent = 10;
+        status.style.color = 'var(--green)';
+        status.textContent = 'Coupon applied: 10% Discount!';
+        renderCartUI();
+        toast.success('10% discount applied to your order!');
+      } else if (code) {
+        status.style.color = 'var(--red)';
+        status.textContent = 'Invalid promo code. Try RIG10';
+      }
+    };
+
+    // Checkout redirect
+    document.getElementById('btn-proceed-checkout').onclick = () => {
+      window.location.href = './checkout.html';
+    };
+
+    loadCart();
+  </script>
+</body>
+</html>
