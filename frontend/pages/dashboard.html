@@ -117,12 +117,20 @@
               <pre id="algo-binarysearch-view" style="background:var(--bg-primary); padding:10px; border-radius:4px; font-size:0.75rem; color:var(--text-primary); max-height:180px; overflow-y:auto;">Ready for execution.</pre>
             </div>
 
-            <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; grid-column:1/-1;">
+            <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px;">
               <div style="font-weight:700; color:var(--accent); font-size:0.85rem; margin-bottom:8px;">
                 <i class="bi bi-stack"></i> CUSTOM SINGLY LINKED LIST & UNDO STACK
               </div>
               <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">Dynamic memory pointer nodes and LIFO stack supporting customization history:</p>
               <pre id="algo-stack-view" style="background:var(--bg-primary); padding:10px; border-radius:4px; font-size:0.75rem; color:var(--text-primary); max-height:180px; overflow-y:auto;">Ready for execution.</pre>
+            </div>
+
+            <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px;">
+              <div style="font-weight:700; color:var(--accent); font-size:0.85rem; margin-bottom:8px;">
+                <i class="bi bi-lightning-charge-fill"></i> GREEDY PC BUILD ASSISTANT (PHASE 4)
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">Greedily minimizes total cost across 5 mandatory categories within budget:</p>
+              <pre id="algo-greedy-view" style="background:var(--bg-primary); padding:10px; border-radius:4px; font-size:0.75rem; color:var(--text-primary); max-height:180px; overflow-y:auto;">Ready for execution.</pre>
             </div>
           </div>
         </div>
@@ -303,6 +311,7 @@
         document.getElementById('algo-mergesort-view').textContent = JSON.stringify(res.sortedProducts || res.mergeSort || res, null, 2);
         document.getElementById('algo-binarysearch-view').textContent = JSON.stringify(res.binarySearchResult || res.search || 'Found product via binary search step in O(log n)', null, 2);
         document.getElementById('algo-stack-view').textContent = JSON.stringify(res.customStructures || res.stackDemo || { status: "Active", undoHistoryEntries: 4 }, null, 2);
+        document.getElementById('algo-greedy-view').textContent = JSON.stringify(res.greedyBuild || 'N/A', null, 2);
         toast.success('DSA benchmarks ran successfully!');
       } catch (err) {
         toast.error('Could not connect to /api/algorithms/demo');

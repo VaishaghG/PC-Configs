@@ -4,13 +4,16 @@ import com.pcconfigurations.backend.algorithms.ComponentLinkedList;
 import com.pcconfigurations.backend.algorithms.ProductBinarySearch;
 import com.pcconfigurations.backend.algorithms.ProductMergeSort;
 import com.pcconfigurations.backend.algorithms.SelectionStack;
+import com.pcconfigurations.backend.dto.GreedyBuildResponse;
 import com.pcconfigurations.backend.dto.ProductDTO;
 import com.pcconfigurations.backend.entity.Product;
 import com.pcconfigurations.backend.repository.ProductRepository;
+import com.pcconfigurations.backend.service.GreedyBuildService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,9 @@ public class AlgorithmController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private GreedyBuildService greedyBuildService;
 
     /**
      * Demonstrates all four DSA algorithms.
@@ -89,6 +95,23 @@ public class AlgorithmController {
         msDemo.put("top3MostExpensive", sortedDesc.stream().limit(3)
                 .map(p -> p.getName() + " - ₹" + p.getPrice()).collect(Collectors.toList()));
         result.put("mergeSort", msDemo);
+
+        // 5. Greedy Algorithm Demo (Phase 4 Budget Optimizer)
+        try {
+            GreedyBuildResponse greedyDemo = greedyBuildService.buildWithinBudget(allProducts, new BigDecimal("150000.00"));
+            Map<String, Object> gbDemo = new LinkedHashMap<>();
+            gbDemo.put("description", "Greedy PC Build Optimizer within Budget (Phase 4)");
+            gbDemo.put("targetBudget", "₹1,50,000.00");
+            gbDemo.put("totalPrice", "₹" + greedyDemo.getTotalPrice());
+            gbDemo.put("remainingBudget", "₹" + greedyDemo.getRemainingBudget());
+            gbDemo.put("selectedCount", greedyDemo.getSelectedComponents().size());
+            gbDemo.put("selectedComponents", greedyDemo.getSelectedComponents().stream()
+                    .map(c -> c.getCategory() + ": " + c.getName() + " (₹" + c.getPrice() + ")")
+                    .collect(Collectors.toList()));
+            result.put("greedyBuild", gbDemo);
+        } catch (Exception e) {
+            result.put("greedyBuild", Map.of("error", e.getMessage()));
+        }
 
         return ResponseEntity.ok(result);
     }

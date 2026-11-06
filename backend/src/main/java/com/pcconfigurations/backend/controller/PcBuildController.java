@@ -1,8 +1,11 @@
 package com.pcconfigurations.backend.controller;
 
+import com.pcconfigurations.backend.dto.GreedyBuildRequest;
+import com.pcconfigurations.backend.dto.GreedyBuildResponse;
 import com.pcconfigurations.backend.dto.PcBuildDTO;
 import com.pcconfigurations.backend.dto.PcBuildRequest;
 import com.pcconfigurations.backend.entity.User;
+import com.pcconfigurations.backend.service.GreedyBuildService;
 import com.pcconfigurations.backend.service.PcBuildService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,20 @@ public class PcBuildController {
 
     @Autowired
     private PcBuildService pcBuildService;
+
+    @Autowired
+    private GreedyBuildService greedyBuildService;
+
+    @PostMapping("/greedy")
+    public ResponseEntity<?> getGreedyBuild(@Valid @RequestBody GreedyBuildRequest request) {
+        try {
+            return ResponseEntity.ok(greedyBuildService.generateGreedyBuild(request));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to generate greedy build: " + e.getMessage()));
+        }
+    }
 
     @PostMapping
     public ResponseEntity<?> createBuild(

@@ -31,6 +31,11 @@ A full-stack, responsive custom PC builder and hardware e-commerce web platform 
 - **BinarySearch (`O(log n)`):** Fast logarithmic search algorithm for locating products by key within sorted hardware arrays.
 - **Custom SinglyLinkedList:** Custom node-based pointer chain data structure implemented from scratch for managing hardware parts.
 - **Generic Stack:** Custom LIFO data structure backing user build action undo/redo states.
+- **Greedy PC Build Assistant (`GreedyBuildService` — Phase 4):**
+  - **Strategy & Selection Rule:** Greedily selects the lowest-priced eligible in-stock component across all 5 mandatory hardware categories (`CPU`, `GPU`, `RAM`, `STORAGE`, `CABINET`), strictly bounding total expenditures to the user's budget.
+  - **Time Complexity:** $O(N \log N)$ where $N$ is total inventory size (sorting per category via `ProductMergeSort`).
+  - **Space Complexity:** $O(N)$ auxiliary sorting and selection storage.
+  - **Limitations:** Focuses on minimum-cost budget satisfaction rather than multi-objective Pareto performance optimization across hardware bottlenecks.
 - **Interactive DSA Playground:** Live benchmark dashboard executing algorithms directly against the backend REST endpoint (`/api/algorithms/demo`).
 
 ---
@@ -166,6 +171,7 @@ npx -y serve -l 3000
 ### Custom PC Builds (`/api/builds`)
 | Method | Endpoint | Description |
 |---|---|---|
+| `POST` | `/api/builds/greedy` | Calculate greedy PC build within target budget `{ "budget": 150000 }` (Phase 4) |
 | `POST` | `/api/builds` | Save a new custom PC build (name, notes, componentIds) |
 | `GET`  | `/api/builds` | Retrieve all saved builds for logged-in user |
 | `GET`  | `/api/builds/{id}` | Retrieve specific build details |

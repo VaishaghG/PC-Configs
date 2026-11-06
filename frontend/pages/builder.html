@@ -29,6 +29,9 @@
         <div class="topbar-price-label">Live System Total</div>
         <div class="topbar-price-val" id="topbar-total-price">₹0</div>
       </div>
+      <button class="btn btn-outline btn-sm" id="btn-open-greedy-modal" style="border-color:var(--accent); color:var(--accent); background:rgba(0,240,255,0.06);" title="Auto-build complete PC within budget using Greedy Algorithm">
+        <i class="bi bi-lightning-charge-fill text-accent"></i> Build Within Budget
+      </button>
       <button class="btn btn-outline btn-sm" id="btn-save-build-top" title="Save this configuration to your account">
         <i class="bi bi-bookmark-plus"></i> Save Build
       </button>
@@ -43,9 +46,11 @@
 
     <!-- 1. Left Vertical Component Category Rail -->
     <aside class="builder-cat-rail" id="builder-cat-rail">
-      <div class="cat-rail-header">
-        <span>Hardware Slots</span>
-        <span id="cat-rail-progress">0/5</span>
+      <div class="cat-rail-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <span>Hardware Slots <span id="cat-rail-progress" style="opacity:0.8;">(0/5)</span></span>
+        <button id="btn-greedy-rail-trigger" class="btn btn-ghost btn-sm" style="font-size:0.72rem; color:var(--accent); padding:2px 8px; border:1px solid rgba(0,240,255,0.3); border-radius:12px; display:inline-flex; align-items:center; gap:4px;" title="Auto-build within budget">
+          <i class="bi bi-magic"></i> Auto-Build
+        </button>
       </div>
 
       <!-- CPU -->
@@ -157,7 +162,7 @@
         <!-- Dynamic Ambient Podium Glow -->
         <div class="stage-podium-glow" id="podium-glow"></div>
         <div class="stage-podium-ring" id="podium-ring"></div>
-
+          
         <!-- Primary Showcase Rig -->
         <div class="showcase-rig-holder">
           <img src="/assets/showcase/rig_primary.jpg" alt="Custom Gaming PC Showcase" class="showcase-rig-img" id="showcase-rig-img">
@@ -277,6 +282,86 @@
         <button class="btn btn-electric btn-full" id="btn-confirm-save">
           <i class="bi bi-check-lg"></i> Confirm & Save Build
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Greedy Build Within Budget Modal -->
+  <div class="modal-overlay" id="greedy-build-modal">
+    <div class="modal" style="max-width:580px; background:rgba(8,16,28,0.96); border:1px solid var(--border); backdrop-filter:blur(24px); box-shadow:0 0 50px rgba(0,240,255,0.15);">
+      <div class="modal-header" style="border-bottom-color:var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--accent); letter-spacing:0.12em; font-weight:700; margin-bottom:2px;">
+            Phase 4 Data Structures & Algorithms
+          </div>
+          <h3 class="modal-title" style="color:#fff; font-family:'Rajdhani'; font-size:1.4rem; display:flex; align-items:center; gap:8px; margin:0;">
+            <i class="bi bi-lightning-charge-fill text-accent"></i> Build My PC Within Budget
+          </h3>
+        </div>
+        <button class="modal-close" id="greedy-modal-close" style="color:var(--text-muted);">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding:20px 24px 24px;">
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:14px; line-height:1.5;">
+          Our <strong>Greedy Algorithm</strong> queries live database inventory, selecting the lowest-priced eligible component for each essential hardware slot (CPU, GPU, RAM, Storage, Cabinet) while strictly maintaining your budget cap.
+        </p>
+
+        <!-- Budget Input -->
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label" style="font-size:0.85rem; color:var(--text-secondary); font-weight:600;">Target Budget (INR ₹) *</label>
+          <div style="position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--accent); font-weight:700; font-size:1.15rem;">₹</span>
+            <input type="number" id="greedy-budget-input" class="form-control" placeholder="Enter budget e.g. 150000" min="1" step="1000" style="padding-left:32px; font-family:'Rajdhani'; font-size:1.15rem; font-weight:700; color:#fff;">
+          </div>
+        </div>
+
+        <!-- Quick preset chips -->
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; align-items:center;">
+          <span style="font-size:0.75rem; color:var(--text-muted);">Quick Presets:</span>
+          <button type="button" class="btn btn-outline btn-sm preset-budget-btn" data-budget="80000" style="font-size:0.75rem; padding:3px 10px;">₹80,000</button>
+          <button type="button" class="btn btn-outline btn-sm preset-budget-btn" data-budget="120500" style="font-size:0.75rem; padding:3px 10px;">₹1,20,500</button>
+          <button type="button" class="btn btn-outline btn-sm preset-budget-btn" data-budget="150000" style="font-size:0.75rem; padding:3px 10px;">₹1,50,000</button>
+          <button type="button" class="btn btn-outline btn-sm preset-budget-btn" data-budget="220000" style="font-size:0.75rem; padding:3px 10px;">₹2,20,000</button>
+        </div>
+
+        <button class="btn btn-electric btn-full" id="btn-run-greedy-build" style="margin-bottom:14px;">
+          <i class="bi bi-cpu-fill"></i> Calculate Optimal Greedy Build
+        </button>
+
+        <!-- Error Alert Container -->
+        <div id="greedy-error-banner" style="display:none; padding:12px 14px; border-radius:6px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#fca5a5; font-size:0.85rem; margin-bottom:14px; line-height:1.4;">
+          <i class="bi bi-exclamation-triangle-fill me-2" style="color:#ef4444;"></i>
+          <span id="greedy-error-text"></span>
+        </div>
+
+        <!-- Recommendation Review Container -->
+        <div id="greedy-result-card" style="display:none; background:rgba(14,24,40,0.7); border:1px solid var(--border); border-radius:8px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px; margin-bottom:12px;">
+            <div>
+              <span style="font-size:0.72rem; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.06em;">Calculated Build Cost</span>
+              <div id="greedy-res-total" style="font-family:'Rajdhani'; font-size:1.4rem; font-weight:700; color:var(--accent);">₹0</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:0.72rem; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.06em;">Remaining Budget</span>
+              <div id="greedy-res-remaining" style="font-family:'Rajdhani'; font-size:1.15rem; font-weight:700; color:#10b981;">₹0</div>
+            </div>
+          </div>
+
+          <!-- Components Table/List -->
+          <div id="greedy-res-items" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+            <!-- Injected component rows -->
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-electric btn-sm" id="btn-apply-greedy-build" style="flex:1;">
+              <i class="bi bi-check2-circle"></i> Apply Recommendation to Rig
+            </button>
+            <button class="btn btn-outline btn-sm" id="btn-cancel-greedy" style="flex:0.4;">
+              Cancel
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -931,6 +1016,136 @@
       document.getElementById('cart-success-modal').classList.remove('open');
     };
     document.getElementById('btn-copy-specs').onclick = copySpecSheet;
+
+    // 14. Phase 4 Greedy Build Assistant
+    let latestGreedyRecommendation = null;
+
+    function openGreedyModal() {
+      const modal = document.getElementById('greedy-build-modal');
+      const errBanner = document.getElementById('greedy-error-banner');
+      const resCard = document.getElementById('greedy-result-card');
+      const budgetInput = document.getElementById('greedy-budget-input');
+
+      errBanner.style.display = 'none';
+      resCard.style.display = 'none';
+      latestGreedyRecommendation = null;
+      if (!budgetInput.value) {
+        budgetInput.value = '150000';
+      }
+      modal.classList.add('open');
+      budgetInput.focus();
+    }
+
+    function closeGreedyModal() {
+      document.getElementById('greedy-build-modal').classList.remove('open');
+    }
+
+    async function runGreedyBuild() {
+      const budgetInput = document.getElementById('greedy-budget-input');
+      const errBanner = document.getElementById('greedy-error-banner');
+      const errText = document.getElementById('greedy-error-text');
+      const resCard = document.getElementById('greedy-result-card');
+      const btnRun = document.getElementById('btn-run-greedy-build');
+
+      const budget = parseFloat(budgetInput.value);
+      if (isNaN(budget) || budget <= 0) {
+        errText.textContent = 'Please enter a valid positive budget amount in INR (₹).';
+        errBanner.style.display = 'block';
+        resCard.style.display = 'none';
+        return;
+      }
+
+      errBanner.style.display = 'none';
+      btnRun.disabled = true;
+      btnRun.innerHTML = `<span class="spinner" style="width:16px; height:16px; margin-right:6px; display:inline-block; vertical-align:middle;"></span> Optimizing Components...`;
+
+      try {
+        const res = await api.greedyBuild(budget);
+        latestGreedyRecommendation = res;
+
+        // Render summary numbers
+        document.getElementById('greedy-res-total').textContent = formatPrice(res.totalPrice);
+        document.getElementById('greedy-res-remaining').textContent = formatPrice(res.remainingBudget);
+
+        // Render components list
+        const itemsContainer = document.getElementById('greedy-res-items');
+        itemsContainer.innerHTML = '';
+
+        (res.selectedComponents || []).forEach(comp => {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:8px 12px;';
+          row.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="badge" style="background:rgba(0,240,255,0.1); color:var(--accent); border:1px solid rgba(0,240,255,0.25); font-size:0.7rem; font-weight:700; padding:2px 6px;">${comp.category}</span>
+              <div>
+                <div style="font-size:0.85rem; font-weight:600; color:#fff;">${comp.name}</div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">${comp.brand} • In Stock (${comp.stockQuantity})</div>
+              </div>
+            </div>
+            <div style="font-family:'Rajdhani'; font-size:1rem; font-weight:700; color:#fff;">
+              ${formatPrice(comp.price)}
+            </div>
+          `;
+          itemsContainer.appendChild(row);
+        });
+
+        resCard.style.display = 'block';
+      } catch (err) {
+        latestGreedyRecommendation = null;
+        resCard.style.display = 'none';
+        errText.textContent = err.message || 'Unable to compute greedy configuration within the provided budget.';
+        errBanner.style.display = 'block';
+      } finally {
+        btnRun.disabled = false;
+        btnRun.innerHTML = `<i class="bi bi-cpu-fill"></i> Calculate Optimal Greedy Build`;
+      }
+    }
+
+    function applyGreedyRecommendation() {
+      if (!latestGreedyRecommendation || !latestGreedyRecommendation.selectedComponents) {
+        toast.warning('No active recommendation to apply.');
+        return;
+      }
+
+      const recs = latestGreedyRecommendation.selectedComponents;
+      recs.forEach(comp => {
+        if (buildState.hasOwnProperty(comp.category)) {
+          selectComponent(comp.category, comp, false);
+        }
+      });
+
+      customBuildTitle = `GREEDY RIG (₹${Math.round(latestGreedyRecommendation.totalPrice).toLocaleString('en-IN')})`;
+      saveLocalState();
+      updateUI();
+      renderCategoryRail();
+      renderActiveCarousel();
+      updateShowcaseImage();
+      closeGreedyModal();
+
+      toast.success('Greedy build recommendation applied to your custom rig!');
+    }
+
+    // Greedy build triggers
+    document.getElementById('btn-open-greedy-modal').onclick = openGreedyModal;
+    document.getElementById('btn-greedy-rail-trigger').onclick = openGreedyModal;
+    document.getElementById('greedy-modal-close').onclick = closeGreedyModal;
+    document.getElementById('btn-cancel-greedy').onclick = closeGreedyModal;
+    document.getElementById('btn-run-greedy-build').onclick = runGreedyBuild;
+    document.getElementById('btn-apply-greedy-build').onclick = applyGreedyRecommendation;
+
+    document.querySelectorAll('.preset-budget-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.getElementById('greedy-budget-input').value = btn.dataset.budget;
+        runGreedyBuild();
+      };
+    });
+
+    document.getElementById('greedy-budget-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runGreedyBuild();
+      }
+    });
 
     // Close modals on overlay click
     window.onclick = (e) => {

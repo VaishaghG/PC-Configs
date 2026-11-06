@@ -74,6 +74,7 @@ export const api = {
   getBuild:    (id)    => request('GET',  `/builds/${id}`),
   updateBuild: (id, d) => request('PUT',  `/builds/${id}`, d),
   deleteBuild: (id)    => request('DELETE',`/builds/${id}`),
+  greedyBuild: (budget) => request('POST', '/builds/greedy', { budget }),
 
   // Dashboard
   getDashboard: () => request('GET', '/dashboard'),

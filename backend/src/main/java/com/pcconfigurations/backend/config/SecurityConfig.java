@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                 .requestMatchers("/api/algorithms/**").permitAll()
+                .requestMatchers("/api/builds/greedy").permitAll()
                 .requestMatchers("/", "/*.html", "/pages/**", "/js/**", "/css/**", "/assets/**", "/favicon.ico", "/error").permitAll()
                 .requestMatchers("/api/cart/**").authenticated()
                 .requestMatchers("/api/orders/**").authenticated()
